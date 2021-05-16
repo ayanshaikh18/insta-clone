@@ -12,10 +12,11 @@ const Container = styled.div`
 `;
 
 const Main = styled.div`
+  position:relative;
   margin-top: 55px;
   display: grid;
+  z-index : 0;
   grid-template-columns: 5% 50% 40% 5%;
-  z-index: 0;
   @media only screen and (max-width: 600px) {
     grid-template-columns: 0% 100% 0% 0%;
   }
@@ -37,8 +38,13 @@ const MidContainer = styled.div`
 `;
 
 const Home = () => {
+
+  const closeDropDown = () => {
+    document.getElementById("dropdown").style.display = "none";
+  }
+
   return (
-    <Main>
+    <Main id="main" onClick={()=>closeDropDown()}>
       <Col></Col>
       <Col>
         <MidContainer>

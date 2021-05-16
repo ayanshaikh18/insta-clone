@@ -9,6 +9,7 @@ const Container = styled.div`
   width: 300px;
   margin-left: 70px;
   position: fixed;
+  z-index : 0;
 `;
 
 const ProfileContainer = styled.div`

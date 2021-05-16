@@ -9,6 +9,7 @@ const Container = styled.div`
 `;
 
 const ProfilePic = styled.img`
+  margin-top: 15px;
   height: 160px;
   width: 148px;
   border-radius: 50%;
@@ -63,9 +64,13 @@ const ProfileTop = () => {
         </div>
         <br />
         <div>
-          <div><b>Ayan Shaikh</b></div>
-          <div style={{paddingTop:"3px"}}>Grow up, Glow up, Blow up </div>
-          <div style={{paddingTop:"3px",fontWeight:"550"}}>
+          <div>
+            <b>Ayan Shaikh</b>
+          </div>
+          <div style={{ paddingTop: "3px" }}>
+            Grow up, Glow up, Blow up !!!{" "}
+          </div>
+          <div style={{ paddingTop: "3px", fontWeight: "550" }}>
             <a
               style={{ textDecoration: "none", color: "darkblue" }}
               href="https://ayanshaikh18.github.io/Portfolio"

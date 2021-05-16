@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+import ayan from "../assets/images/ayan.png";
 import post1 from "../assets/images/post1.jfif";
 import post2 from "../assets/images/post2.jfif";
 import post3 from "../assets/images/post3.jfif";
@@ -14,13 +15,14 @@ import post10 from "../assets/images/post10.jfif";
 const posts = [
   { url: post1 },
   { url: post2 },
-  { url: post3 },
   { url: post4 },
-  { url: post5 },
   { url: post6 },
+  { url: post3 },
   { url: post7 },
   { url: post8 },
+  { url: post5 },
   { url: post9 },
+  { url: ayan },
   { url: post10 },
 ];
 

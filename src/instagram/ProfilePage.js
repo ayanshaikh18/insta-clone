@@ -14,8 +14,11 @@ const Wrapper = styled.div`
 `;
 
 const ProfilePage = () => {
+  const closeDropDown = () => {
+    document.getElementById("dropdown").style.display = "none";
+  };
   return (
-    <Wrapper>
+    <Wrapper onClick={() => closeDropDown()}>
       <div></div>
       <div>
         <ProfileTop />
