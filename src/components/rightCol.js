@@ -3,6 +3,8 @@ import pic1 from "../assets/images/pic1.jpeg";
 import pic2 from "../assets/images/pic2.jpeg";
 import pic3 from "../assets/images/pic3.jpg";
 import ayan from "../assets/images/ayan.png";
+import utsav from "../assets/images/Utsav.jfif";
+import axar from "../assets/images/Axar.jfif";
 
 const Container = styled.div`
   padding: 15px;
@@ -71,9 +73,9 @@ const RightCol = () => {
       <h4 style={{ color: "grey" }}>Suggestions For You</h4>
       <Profile
         text="follow"
-        pic={ayan}
-        username="jwalit21"
-        name="Jwalit Shah"
+        pic={axar}
+        username="axar_fanclub"
+        name="Axar Patel FC"
         height="35"
         width="35"
       />
@@ -95,7 +97,7 @@ const RightCol = () => {
       />
       <Profile
         text="follow"
-        pic={pic3}
+        pic={utsav}
         username="utsavshekh"
         name="Utsav Shekh"
         height="35"

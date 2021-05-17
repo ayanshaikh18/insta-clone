@@ -4,47 +4,63 @@ import pic2 from "../assets/images/pic2.jpeg";
 import pic3 from "../assets/images/pic3.jpg";
 import ayan from "../assets/images/ayan.png";
 
+import post1 from "../assets/images/post3.jfif";
+import mahi from "../assets/images/MAhi.jfif";
+import rohit from "../assets/images/Rohit.jfif";
+import jwalit from "../assets/images/Jwalit.jfif";
+import jwalit1 from "../assets/images/Jwalit1.jfif";
+import saloni from "../assets/images/Saloni.jfif";
+import shahid from "../assets/images/Shahid.jfif";
+import anushka from "../assets/images/anushka.jpeg";
+
 const posts = [
   {
-    url: pic1,
+    url: jwalit,
     username: "jwalit21",
-    caption: "Yes, it's better than drugs. Jeremy! 🥰",
-    profilePic: pic3,
+    caption: "All this hustle and bustle makes me feel exhilarated!!!",
+    profilePic: jwalit,
     uploadTime: "53m ago",
   },
   {
     url: pic2,
     username: "viratkohli",
-    caption: "",
+    caption: "Yes, it's better than drugs. Jeremy! 🥰",
     profilePic: pic1,
     uploadTime: "53m ago",
   },
   {
-    url: ayan,
+    url: post1,
     username: "_.ayan18",
-    caption: "",
+    caption: "Smile is the preetiest thing you can wear. ",
     profilePic: pic2,
     uploadTime: "10m ago",
   },
   {
-    url: pic2,
+    url: shahid,
     username: "shahid2002",
     caption: "",
-    profilePic: ayan,
+    profilePic: shahid,
     uploadTime: "16h ago",
   },
   {
-    url: ayan,
+    url: mahi,
     username: "mahi7781",
-    caption: "",
-    profilePic: ayan,
+    caption: "🏆🏆🏆",
+    profilePic: mahi,
     uploadTime: "21h ago",
   },
   {
-    url: pic1,
+    url: rohit,
     username: "rohit.sharma",
     caption: "",
-    profilePic: pic3,
+    profilePic: rohit,
+    uploadTime: "1h ago",
+  },
+  {
+    url: anushka,
+    username: "Anushka.Sharma",
+    caption: "",
+    profilePic: anushka,
     uploadTime: "1h ago",
   },
 ];
