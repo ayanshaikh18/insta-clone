@@ -19,7 +19,7 @@ then open this link in your browser :- http://localhost:3000/
 ```javascript
 
 if (you_like_the_work) {
-    starThisRepository();
+    star_this_repository();
 }
 
 ```
