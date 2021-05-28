@@ -60,8 +60,9 @@ exports.sendFriendRequest = async (req, res) => {
       res.status(500).send({
         msg: "Something Went Wrong!!!",
       });
+    } else {
+      res.send({ request_data });
     }
-    res.send({ request_data });
   });
 };
 

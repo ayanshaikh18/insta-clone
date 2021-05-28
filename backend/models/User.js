@@ -30,6 +30,14 @@ var UserScheme = new Schema(
       type: Array,
       default: [],
     },
+    profilePic: {
+      type: String,
+      default: null,
+    },
+    displayName: {
+      type: String,
+      default: "",
+    },
   },
   { timestamp: true }
 );

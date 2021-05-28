@@ -1,17 +1,15 @@
 import styled from "styled-components";
+import defaultDp from "../assets/images/default.webp";
 import pic1 from "../assets/images/pic1.jpeg";
-import pic2 from "../assets/images/pic2.jpeg";
-import pic3 from "../assets/images/pic3.jpg";
-import ayan from "../assets/images/ayan.png";
-import utsav from "../assets/images/Utsav.jfif";
-import axar from "../assets/images/Axar.jfif";
+import { useEffect, useState } from "react";
+import { getSuggestions, sendFriendRequest } from "../services/authService";
 
 const Container = styled.div`
   padding: 15px;
   width: 300px;
   margin-left: 70px;
   position: fixed;
-  z-index : 0;
+  z-index: 0;
 `;
 
 const ProfileContainer = styled.div`
@@ -38,11 +36,20 @@ const NameContainer = styled.div`
 
 const Footer = styled.footer`
   color: grey;
-  margin-top : 30px;
-  font-size : 15px;
+  margin-top: 30px;
+  font-size: 15px;
 `;
 
 const Profile = (props) => {
+  const [reqSent, setReqSent] = useState(false);
+
+  const followUser = async (username, node) => {
+    var response = await sendFriendRequest(username);
+    console.log(node);
+    var data = response.data.request_data;
+    if (data._id) setReqSent(true);
+  };
+
   return (
     <ProfileContainer first={props.first}>
       <ProfilePic src={props.pic} width={props.width} height={props.height} />
@@ -51,13 +58,31 @@ const Profile = (props) => {
         {props.name}
       </NameContainer>
       <NameContainer style={{ color: "blue", top: "20%" }}>
-        {props.text}
+        <a
+          style={{ cursor: "pointer" }}
+          onClick={() => followUser(props.username, this)}
+        >
+          {reqSent ? "Request Sent" : props.text}
+        </a>
       </NameContainer>
     </ProfileContainer>
   );
 };
 
 const RightCol = () => {
+  const [suggestions, setSuggestions] = useState([]);
+
+  useEffect(() => {
+    retriveSuggestions();
+  }, []);
+
+  const retriveSuggestions = async () => {
+    var response = await getSuggestions();
+    var suggestions = response.data;
+    console.log(suggestions);
+    setSuggestions(suggestions);
+  };
+
   return (
     <Container>
       <Profile
@@ -71,38 +96,24 @@ const RightCol = () => {
       />
       <br />
       <h4 style={{ color: "grey" }}>Suggestions For You</h4>
-      <Profile
-        text="follow"
-        pic={axar}
-        username="axar_fanclub"
-        name="Axar Patel FC"
-        height="35"
-        width="35"
-      />
-      <Profile
-        text="follow"
-        pic={pic2}
-        username="viratkohli18"
-        name="Virat Kohli"
-        height="35"
-        width="35"
-      />
-      <Profile
-        text="follow"
-        pic={pic1}
-        username="shahid21"
-        name="Shahid Shaikh"
-        height="35"
-        width="35"
-      />
-      <Profile
-        text="follow"
-        pic={utsav}
-        username="utsavshekh"
-        name="Utsav Shekh"
-        height="35"
-        width="35"
-      />
+
+      {!suggestions ? (
+        <h3>Nothing To Show</h3>
+      ) : (
+        suggestions.map((suggestion) => (
+          <Profile
+            text="follow"
+            pic={
+              suggestion.profilePic == null ? suggestion.profilePic : defaultDp
+            }
+            username={suggestion.name}
+            name={suggestion.displayName}
+            height="35"
+            width="35"
+            key={suggestion._id}
+          />
+        ))
+      )}
 
       <Footer>© - Mahammadayan Shaikh</Footer>
     </Container>

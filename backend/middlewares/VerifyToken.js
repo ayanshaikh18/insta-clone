@@ -15,7 +15,7 @@ exports.verifyToken = (req, res, next) => {
   }
   req.userId = payload._id;
   userController.findLoggedInUser(req, res, (user) => {
-    req.user = user
-    next()
+    req.user = user;
+    next();
   });
 };
