@@ -1,3 +1,4 @@
+import Navbar from "../components/navbar";
 import styled from "styled-components";
 import ProfileTop from "../components/ProfileTop";
 import Highlights from "../components/Highlights";
@@ -18,15 +19,18 @@ const ProfilePage = () => {
     document.getElementById("dropdown").style.display = "none";
   };
   return (
-    <Wrapper onClick={() => closeDropDown()}>
-      <div></div>
-      <div>
-        <ProfileTop />
-        <Highlights />
-        <ProfileBottom />
-      </div>
-      <div></div>
-    </Wrapper>
+    <>
+      <Navbar />
+      <Wrapper onClick={() => closeDropDown()}>
+        <div></div>
+        <div>
+          <ProfileTop />
+          <Highlights />
+          <ProfileBottom />
+        </div>
+        <div></div>
+      </Wrapper>
+    </>
   );
 };
 

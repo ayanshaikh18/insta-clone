@@ -1,16 +1,17 @@
 import styled from "styled-components";
-import Container, {
-  ContainerDiv,
-  Card,
-} from "../components/LoginSignupContainer";
+import Container, { ContainerDiv } from "../components/LoginSignupContainer";
 import logo from "../assets/images/logo1.jpg";
 import { useForm } from "react-hook-form";
+import useToken from "../hooks/useToken";
+import { Link } from "react-router-dom";
+import { signup } from "../services/authService";
+import { useHistory } from "react-router-dom";
 
-const Logo = styled.img`
+export const Logo = styled.img`
   height: 50px;
 `;
 
-const InputContainer = styled(ContainerDiv)`
+export const InputContainer = styled(ContainerDiv)`
   margin-top: 15px;
   padding-left: 15px;
   padding-right: 15px;
@@ -19,7 +20,7 @@ const InputContainer = styled(ContainerDiv)`
   flex-direction: column;
 `;
 
-const Input = styled.input`
+export const Input = styled.input`
   background-color: #fafafa;
   text-align: center;
   width: 100%;
@@ -34,7 +35,7 @@ const Input = styled.input`
   }
 `;
 
-const SubmitBtn = styled.button`
+export const SubmitBtn = styled.button`
   background-color: #0095f6;
   color: #fff;
   width: 100%;
@@ -49,24 +50,38 @@ const SubmitBtn = styled.button`
   }
 `;
 
-const ErrorMsg = styled.div`
+export const ErrorMsg = styled.div`
   color: red;
   font-size: 13px;
   display: inline;
 `;
 
-const SignupPage = () => {
+const SignupPage = (props) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isDirty, isSubmitting, touched, isValid, isSubmitted },
+    formState: { errors, isDirty, isValid, isSubmitted, isSubmitting },
     getValues,
+    setError,
   } = useForm({
-    mode: "onChange",
+    mode: "all",
   });
 
-  const onSubmit = (data) => {
+  const { token, setToken } = useToken();
+  const history = useHistory();
+
+  const onSubmit = async (data) => {
     console.log(data);
+    var response = await signup(data);
+    if (!response.data.error) {
+      setToken(response.data.token);
+      history.push("/");
+      return;
+    }
+    setError("username", {
+      type: "manual",
+      message: response.data.error,
+    });
   };
 
   const validateConfirmpassword = (value) => {
@@ -142,13 +157,11 @@ const SignupPage = () => {
           <InputContainer>
             <SubmitBtn
               type="submit"
-              disabled={!isDirty || !isValid || isSubmitted}
+              disabled={!isDirty || !isValid || isSubmitting}
             >
-              {isSubmitted ? (
+              {isSubmitting ? (
                 <>
-                  <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>{" "}
-                  &nbsp; Signing Up &nbsp;
-                  {/* <i class="fa fa-spinner fa-spin" aria-hidden="true"></i> */}
+                  <i className="fa fa-spinner fa-spin" aria-hidden="true"></i>
                 </>
               ) : (
                 <>Sign Up</>
@@ -166,7 +179,8 @@ const SignupPage = () => {
             marginTop: "0px",
           }}
         >
-          Already Have an Account? <a href="#">Login Here</a>
+          Already Have an Account?
+          <Link to="/login/">Login Here</Link>
         </InputContainer>
       </Container>
       <br />

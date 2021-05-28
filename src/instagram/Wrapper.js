@@ -7,6 +7,8 @@ import { Route, BrowserRouter, Switch } from "react-router-dom";
 import ProfilePage from "./ProfilePage";
 import LoginPage from "./Login";
 import SignupPage from "./Signup";
+import useToken from "../hooks/useToken";
+import { useHistory } from "react-router-dom";
 
 const Container = styled.div`
   background-color: #fafafa;
@@ -41,24 +43,34 @@ const MidContainer = styled.div`
 `;
 
 const Home = () => {
+  const { token, setToken } = useToken();
+  const history = useHistory()
+
+  if (!token) {
+    history.push("/login");
+  }
+
   const closeDropDown = () => {
     document.getElementById("dropdown").style.display = "none";
   };
 
   return (
-    <Main id="main" onClick={() => closeDropDown()}>
-      <Col></Col>
-      <Col>
-        <MidContainer>
-          <Story />
-          <Posts />
-        </MidContainer>
-      </Col>
-      <Col>
-        <RightCol />
-      </Col>
-      <Col></Col>
-    </Main>
+    <>
+      <Navbar />
+      <Main id="main" onClick={() => closeDropDown()}>
+        <Col></Col>
+        <Col>
+          <MidContainer>
+            <Story />
+            <Posts />
+          </MidContainer>
+        </Col>
+        <Col>
+          <RightCol />
+        </Col>
+        <Col></Col>
+      </Main>
+    </>
   );
 };
 
@@ -74,17 +86,14 @@ const Wrapper = () => {
             <SignupPage />
           </Route>
           <Route exact path="/">
-            <BrowserRouter>
-              <Navbar />
-              <Switch>
-                <Route exact path="/">
-                  <Home />
-                </Route>
-                <Route exact path="/profile/">
-                  <ProfilePage />
-                </Route>
-              </Switch>
-            </BrowserRouter>
+            <Switch>
+              <Route exact path="/">
+                <Home />
+              </Route>
+              <Route exact path="/profile/">
+                <ProfilePage />
+              </Route>
+            </Switch>
           </Route>
         </Switch>
       </BrowserRouter>

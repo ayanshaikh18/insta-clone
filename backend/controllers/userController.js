@@ -5,14 +5,16 @@ const FriendRequest = require("../models/FriendRequest");
 
 exports.register = (req, res) => {
   var newUser = new User(req.body);
+  console.log(req.body);
   newUser.hash_password = bcrypt.hashSync(req.body.password, 10);
   newUser.save((err, user) => {
     if (err) {
-      if (err.code == 11000)
-        res.status(405).send({ msg: "Username already Taken" });
-      res.status(401).send({
-        msg: err,
-      });
+      if (err.code == 11000) res.json({ error: "Username already Taken" });
+      else {
+        res.status(401).send({
+          msg: err,
+        });
+      }
     } else {
       user.hash_password = undefined;
       let payload = { _id: newUser._id };
@@ -30,15 +32,17 @@ exports.login = (req, res) => {
     (err, user) => {
       if (err) {
         console.log(err);
-        res.status(401).send(err);
+        res.json({ error: err });
+      } else {
+        if (!user || !user.comparePassword(req.body.password)) {
+          res.json({ error: "Invalid Credentials" });
+        } else {
+          let payload = { _id: user._id };
+          let token = jwt.sign(payload, "secretkey");
+          console.log(token);
+          res.json({ token: token, user: user });
+        }
       }
-      if (!user || !user.comparePassword(req.body.password)) {
-        res.status(401).send({ error: "Invalid Login" });
-      }
-
-      let payload = { _id: user._id };
-      let token = jwt.sign(payload, "secretkey");
-      res.status(200).json({ token: token });
     }
   );
 };
