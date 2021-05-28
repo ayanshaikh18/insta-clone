@@ -149,3 +149,21 @@ exports.findLoggedInUser = (req, res, cb) => {
     }
   );
 };
+
+exports.suggestionList = (req, res) => {
+  User.find(
+    {
+      $and: [
+        { name: { $nin: req.user.following } },
+        { name: { $ne: req.user.name } },
+      ],
+    },
+    (err, users) => {
+      if (err) {
+        console.log(err);
+        res.status(401).send(err);
+      }
+      res.json(users);
+    }
+  ).limit(4);
+};

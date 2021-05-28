@@ -24,5 +24,10 @@ router.delete(
   verifyTokenMiddleWare.verifyToken,
   userHandlers.deleteFriendRequest
 );
+router.get(
+  "/getSuggestions/",
+  verifyTokenMiddleWare.verifyToken,
+  userHandlers.suggestionList
+);
 
 module.exports = router;
