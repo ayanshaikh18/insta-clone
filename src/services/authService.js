@@ -52,3 +52,30 @@ export const getFrdRequests = async () => {
   var response = await axios.get("/users/getFrdRequests/", config);
   return response;
 };
+
+export const acceptFrdRequest = async (username) => {
+  var response = await axios.post(
+    "/users/acceptFriendRequest/" + username,
+    null,
+    config
+  );
+  return response;
+};
+
+export const deleteFrdRequest = async (username) => {
+  var response = await axios.post(
+    "/users/deleteFriendRequest/" + username,
+    null,
+    config
+  );
+  return response;
+};
+
+export const unfollowUser = async (username) => {
+  var response = await axios.post(
+    "/users/unfollowUser/" + username,
+    null,
+    config
+  );
+  return response;
+};

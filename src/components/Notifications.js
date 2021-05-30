@@ -3,8 +3,8 @@ import pic1 from "../assets/images/pic1.jpeg";
 import pic2 from "../assets/images/pic2.jpeg";
 import defaultDp from "../assets/images/default.jpg";
 import ayan from "../assets/images/ayan.png";
-import { useState } from "react";
-import { getFrdRequests } from "../services/authService";
+import { useState, useEffect } from "react";
+import { getFrdRequests, getLoggedInUser } from "../services/authService";
 import FriendRequest from "./FriendRequest";
 
 const Container = styled.div`
@@ -45,6 +45,7 @@ export const NotificationMsg = styled.div`
 export const BtnContainer = styled.div`
   display: flex;
   padding: 5px;
+  justify-content: center;
 `;
 
 export const Btn = styled.button`
@@ -54,12 +55,19 @@ export const Btn = styled.button`
   height: 30px;
   border-radius: 5px;
   margin-left: 7px;
-  width: 70px;
+  min-width: 70px;
 `;
 
 const Notifications = () => {
   const [viewingFrdRequests, setViewingFrdRequests] = useState(false);
   const [frdRequests, setFrdRequests] = useState([]);
+  const [loggedInUser, setLoggedInUser] = useState();
+
+  useEffect(async () => {
+    var response = await getLoggedInUser();
+    console.log(response.data);
+    setLoggedInUser(response.data);
+  }, []);
 
   const showFrdRequests = async () => {
     let response = await getFrdRequests();
@@ -75,7 +83,7 @@ const Notifications = () => {
           {frdRequests.map((req) => (
             <>
               <Container isFrdReq="true" key={req._id}>
-                <FriendRequest req={req} />
+                <FriendRequest req={req} loggedInUser={loggedInUser} />
               </Container>
               <Hr />
             </>

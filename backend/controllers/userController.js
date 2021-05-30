@@ -67,15 +67,24 @@ exports.sendFriendRequest = async (req, res) => {
 };
 
 exports.acceptFriendRequest = (req, res) => {
-  FriendRequest.findOne({ _id: req.params.id }, async (err, request) => {
-    if (err) {
-      console.log(err);
-      res.status(401).send(err);
+  console.log(req.params.name);
+  console.log(req.user.name);
+  FriendRequest.findOne(
+    {
+      $and: [{ from: req.params.name }, { to: req.user.name }],
+    },
+    async (err, request) => {
+      console.log(request);
+      if (err) {
+        console.log(err);
+        res.status(401).send(err);
+      } else {
+        await addToFollowers(req, res, request);
+        await addToFollowing(req, res, request);
+        res.send({ msg: "accepted" });
+      }
     }
-    await addToFollowers(req, res, request);
-    await addToFollowing(req, res, request);
-    res.send({ msg: "accepted" });
-  });
+  );
 };
 
 const addToFollowers = (req, res, request) => {
@@ -220,6 +229,38 @@ exports.getFrdRequests = (req, res) => {
           }
         }
       );
+    }
+  );
+};
+
+exports.unfollowuser = (req, res) => {
+  User.updateOne(
+    { _id: req.user._id },
+    {
+      $pull: {
+        following: req.params.name,
+      },
+    },
+    (err, suc) => {
+      if (err) {
+        res.status(400).send({ msg: "Something Went Wrong!!!" });
+      } else {
+        User.updateOne(
+          { name: req.params.name },
+          {
+            $pull: {
+              followers: req.user.name,
+            },
+          },
+          (err, suc) => {
+            if (err) {
+              res.status(400).send({ msg: "Something Went Wrong!!!" });
+            } else {
+              res.json({ msg: "unfollowed" });
+            }
+          }
+        );
+      }
     }
   );
 };

@@ -15,7 +15,7 @@ router.post(
   userHandlers.sendFriendRequest
 );
 router.post(
-  "/acceptFriendRequest/:id",
+  "/acceptFriendRequest/:name",
   verifyTokenMiddleWare.verifyToken,
   userHandlers.acceptFriendRequest
 );
@@ -36,6 +36,11 @@ router.get(
   "/getFrdRequests/",
   verifyTokenMiddleWare.verifyToken,
   userHandlers.getFrdRequests
+);
+router.post(
+  "/unfollowUser/:name",
+  verifyTokenMiddleWare.verifyToken,
+  userHandlers.unfollowuser
 );
 
 module.exports = router;
