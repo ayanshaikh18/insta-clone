@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../assets/images/logo.png";
 import Notifications from "../components/Notifications";
+import Modal from "./Modal";
 
 const AppNavbar = styled.nav`
   background-color: #ffffff;
@@ -113,7 +114,18 @@ const Navbar = () => {
         <Link to="/profile/">
           <MenuIcons className="fa fa-user-circle"></MenuIcons>
         </Link>
+        <a open-modal="myModal">
+          krne baka
+        </a>
+        
+        <Modal modalId="myModal">
+          <h3>Modal header</h3>
+          <hr />
+          <p>Modal body</p>
+        </Modal>
+
       </MenuOptions>
+      
     </AppNavbar>
   );
 };

@@ -13,7 +13,7 @@ import saloni from "../assets/images/Saloni.jfif";
 import shahid from "../assets/images/Shahid.jfif";
 import mansi from "../assets/images/Mansi.jfif";
 
-const stories = [
+const stories = [ 
   { url: jwalit, username: "jwalit21" },
   { url: pic2, username: "viratkohli" },
   { url: ayan, username: "_.ayan18" },
