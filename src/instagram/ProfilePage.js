@@ -3,6 +3,8 @@ import styled from "styled-components";
 import ProfileTop from "../components/ProfileTop";
 import Highlights from "../components/Highlights";
 import ProfileBottom from "../components/ProfileBottom";
+import useToken from "../hooks/useToken";
+import { useHistory } from "react-router-dom";
 
 const Wrapper = styled.div`
   margin-top: 55px;
@@ -15,6 +17,13 @@ const Wrapper = styled.div`
 `;
 
 const ProfilePage = () => {
+  const { token, setToken } = useToken();
+  const history = useHistory();
+
+  if (!token) {
+    history.push("/login");
+  }
+
   const closeDropDown = () => {
     document.getElementById("dropdown").style.display = "none";
   };

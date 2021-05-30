@@ -44,7 +44,7 @@ const MidContainer = styled.div`
 
 const Home = () => {
   const { token, setToken } = useToken();
-  const history = useHistory()
+  const history = useHistory();
 
   if (!token) {
     history.push("/login");
@@ -86,14 +86,10 @@ const Wrapper = () => {
             <SignupPage />
           </Route>
           <Route exact path="/">
-            <Switch>
-              <Route exact path="/">
-                <Home />
-              </Route>
-              <Route exact path="/profile/">
-                <ProfilePage />
-              </Route>
-            </Switch>
+            <Home />
+          </Route>
+          <Route exact path="/profile/">
+            <ProfilePage />
           </Route>
         </Switch>
       </BrowserRouter>

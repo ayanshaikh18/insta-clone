@@ -152,19 +152,74 @@ exports.findLoggedInUser = (req, res, cb) => {
 };
 
 exports.suggestionList = (req, res) => {
-  User.find(
+  console.log(req.user.name);
+  FriendRequest.find(
     {
-      $and: [
-        { name: { $nin: req.user.following } },
-        { name: { $ne: req.user.name } },
+      $or: [
+        {
+          from: req.user.name,
+        },
+        {
+          to: req.user.name,
+        },
       ],
     },
-    (err, users) => {
+    (err, requests) => {
       if (err) {
         console.log(err);
         res.status(401).send(err);
+      } else {
+        console.log(requests);
+        let tos = requests.map((r) => r.to);
+        let froms = requests.map((r) => r.from);
+        User.find(
+          {
+            $and: [
+              { name: { $nin: req.user.following } },
+              { name: { $ne: req.user.name } },
+              { name: { $nin: tos } },
+              { name: { $nin: froms } },
+            ],
+          },
+          (err, users) => {
+            if (err) {
+              console.log(err);
+              res.status(401).send(err);
+            } else {
+              res.json(users);
+            }
+          }
+        ).limit(4);
       }
-      res.json(users);
     }
-  ).limit(4);
+  );
+};
+
+exports.getFrdRequests = (req, res) => {
+  FriendRequest.find(
+    {
+      to: req.user.name,
+    },
+    (err, requests) => {
+      let froms = requests.map((r) => r.from);
+      User.find(
+        {
+          name: { $in: froms },
+        },
+        {
+          name: 1,
+          displayName: 1,
+          profilePic: 1,
+        },
+        (err, users) => {
+          if (err) {
+            console.log(err);
+            res.status(401).send(err);
+          } else {
+            res.json(users);
+          }
+        }
+      );
+    }
+  );
 };

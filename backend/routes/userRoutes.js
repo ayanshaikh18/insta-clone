@@ -29,5 +29,13 @@ router.get(
   verifyTokenMiddleWare.verifyToken,
   userHandlers.suggestionList
 );
+router.get("/getLoggedinUser", verifyTokenMiddleWare.verifyToken, (req, res) =>
+  res.json(req.user)
+);
+router.get(
+  "/getFrdRequests/",
+  verifyTokenMiddleWare.verifyToken,
+  userHandlers.getFrdRequests
+);
 
 module.exports = router;

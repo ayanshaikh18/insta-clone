@@ -42,3 +42,13 @@ export const sendFriendRequest = async (username) => {
   );
   return response;
 };
+
+export const getLoggedInUser = async () => {
+  var response = await axios.get("/users/getLoggedinUser", config);
+  return response;
+};
+
+export const getFrdRequests = async () => {
+  var response = await axios.get("/users/getFrdRequests/", config);
+  return response;
+};

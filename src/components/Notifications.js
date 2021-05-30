@@ -1,22 +1,27 @@
 import styled from "styled-components";
 import pic1 from "../assets/images/pic1.jpeg";
 import pic2 from "../assets/images/pic2.jpeg";
-import pic3 from "../assets/images/pic3.jpg";
+import defaultDp from "../assets/images/default.jpg";
 import ayan from "../assets/images/ayan.png";
+import { useState } from "react";
+import { getFrdRequests } from "../services/authService";
+import FriendRequest from "./FriendRequest";
 
 const Container = styled.div`
   padding: 15px;
   display: grid;
-  grid-template-columns: 10% 73% 17%;
+  cursor: pointer;
+  grid-template-columns: ${(props) =>
+    props.isFrdReq ? "10% 50% auto" : "10% 73% 17%"}; ;
 `;
 
-const CoverPic = styled.img`
+export const CoverPic = styled.img`
   height: 40px;
   width: 40px;
   border-radius: 50%;
 `;
 
-const Hr = styled.div`
+export const Hr = styled.div`
   height: 0;
   border-bottom: 1px solid #d9d9d9;
 `;
@@ -29,73 +34,120 @@ const Heading = styled.div`
   font-weight: bold;
 `;
 
-const NotificationMsg = styled.div`
+export const NotificationMsg = styled.div`
   /* margin-top: 10px; */
   padding-left: 10px;
   justify-content: center;
   align-items: center;
-  font-size : 15px;
+  font-size: 15px;
+`;
+
+export const BtnContainer = styled.div`
+  display: flex;
+  padding: 5px;
+`;
+
+export const Btn = styled.button`
+  background-color: ${(props) => props.bgColor};
+  color: ${(props) => props.txtColor};
+  border: 1px solid #d9d9d9;
+  height: 30px;
+  border-radius: 5px;
+  margin-left: 7px;
+  width: 70px;
 `;
 
 const Notifications = () => {
+  const [viewingFrdRequests, setViewingFrdRequests] = useState(false);
+  const [frdRequests, setFrdRequests] = useState([]);
+
+  const showFrdRequests = async () => {
+    let response = await getFrdRequests();
+    console.log(response.data);
+    setViewingFrdRequests(true);
+    setFrdRequests(response.data);
+  };
+
   return (
     <>
-      <Container>
-        <CoverPic src={pic1} />
-        <NotificationMsg>
-          <b style={{ fontWeight: "550",fontSize:"14px"}}>Follow Requests</b> <br />
-          <small style={{ color: "grey", padding: "0" }}>
-            user1 + 100 others
-          </small>
-        </NotificationMsg>
-      </Container>
-      <Hr />
-      <Heading>
-        <b>Today</b>
-      </Heading>
-      <Container>
-        <CoverPic src={pic2} />
-        <NotificationMsg>cric.memes started follwing you.</NotificationMsg>
-        <button
-          style={{
-            backgroundColor: "#fff",
-            border: "1px solid #d9d9d9",
-            height: "30px",
-            borderRadius: "5px",
-          }}
-        >
-          Following
-        </button>
-      </Container>
-      <Hr />
-      <Heading>
-        <b>This Week</b>
-      </Heading>
-      <Container>
-        <CoverPic src={ayan} />
-        <NotificationMsg>@jwalit21 mentioned you in comment : Thank you bro👍</NotificationMsg>
-        <img src={pic1} height="40px" width="40px"/>
-      </Container>
-      <Container>
-        <CoverPic src={ayan} />
-        <NotificationMsg>@jwalit21 liked your comment : Nice Pic bro✌️</NotificationMsg>
-        <img src={pic1} height="40px" width="40px"/>
-      </Container>
-      <Container>
-        <CoverPic src={pic2} />
-        <NotificationMsg>user1 started follwing you.</NotificationMsg>
-        <button
-          style={{
-            backgroundColor: "#4d79ff",
-            color : "#fff",
-            border: "1px solid #d9d9d9",
-            height: "30px",
-            borderRadius: "5px",
-          }}
-        >
-          Follow
-        </button>
-      </Container>
+      {viewingFrdRequests ? (
+        <>
+          {frdRequests.map((req) => (
+            <>
+              <Container isFrdReq="true" key={req._id}>
+                <FriendRequest req={req} />
+              </Container>
+              <Hr />
+            </>
+          ))}
+        </>
+      ) : (
+        <>
+          <Container onClick={() => showFrdRequests()}>
+            <CoverPic src={pic1} />
+            <NotificationMsg>
+              <b style={{ fontWeight: "550", fontSize: "14px" }}>
+                Follow Requests
+              </b>{" "}
+              <br />
+              <small style={{ color: "grey", padding: "0" }}>
+                user1 + 100 others
+              </small>
+            </NotificationMsg>
+          </Container>
+          <Hr />
+          <Heading>
+            <b>Today</b>
+          </Heading>
+          <Container>
+            <CoverPic src={pic2} />
+            <NotificationMsg>cric.memes started follwing you.</NotificationMsg>
+            <button
+              style={{
+                backgroundColor: "#fff",
+                border: "1px solid #d9d9d9",
+                height: "30px",
+                borderRadius: "5px",
+              }}
+            >
+              Following
+            </button>
+          </Container>
+          <Hr />
+          <Heading>
+            <b>This Week</b>
+          </Heading>
+          <Container>
+            <CoverPic src={ayan} />
+            <NotificationMsg>
+              @jwalit21 mentioned you in comment : Thank you bro👍
+            </NotificationMsg>
+            <img src={pic1} height="40px" width="40px" />
+          </Container>
+          <Container>
+            <CoverPic src={ayan} />
+            <NotificationMsg>
+              @jwalit21 liked your comment : Nice Pic bro✌️
+            </NotificationMsg>
+            <img src={pic1} height="40px" width="40px" />
+          </Container>
+          <Container>
+            <CoverPic src={pic2} />
+            <NotificationMsg>user1 started follwing you.</NotificationMsg>
+            <button
+              style={{
+                backgroundColor: "#4d79ff",
+                color: "#fff",
+                border: "1px solid #d9d9d9",
+                height: "30px",
+                borderRadius: "5px",
+              }}
+            >
+              Follow
+            </button>
+          </Container>
+        </>
+      )}
     </>
   );
 };

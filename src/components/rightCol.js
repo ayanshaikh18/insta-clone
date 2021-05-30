@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import defaultDp from "../assets/images/default.webp";
+import defaultDp from "../assets/images/default.jpg";
 import pic1 from "../assets/images/pic1.jpeg";
 import { useEffect, useState } from "react";
 import { getSuggestions, sendFriendRequest } from "../services/authService";
@@ -104,7 +104,7 @@ const RightCol = () => {
           <Profile
             text="follow"
             pic={
-              suggestion.profilePic == null ? suggestion.profilePic : defaultDp
+              suggestion.profilePic != null ? suggestion.profilePic : defaultDp
             }
             username={suggestion.name}
             name={suggestion.displayName}
