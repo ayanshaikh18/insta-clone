@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../assets/images/logo.png";
-import Notifications from "../components/Notifications";
-import Modal from "./Modal";
+import Notifications from "./Notifications";
+import NewPost from "./NewPost"
 
 const AppNavbar = styled.nav`
   background-color: #ffffff;
@@ -27,10 +27,10 @@ const Logo = styled.a`
   font-weight: bold;
   font-family: cursive;
   display: flex;
-  justify-content: space-around;
+  /* justify-content: space-around; */
 
   @media only screen and (max-width: 600px) {
-    margin-left: 40%;
+    margin-left: 30%;
   }
 `;
 
@@ -52,7 +52,7 @@ const MenuOptions = styled.ul`
   margin-right: 15%;
   display: flex;
   flex-direction: row;
-  margin-left: 30%;
+  margin-left: 25%;
   @media only screen and (max-width: 600px) {
     margin-left: 0%;
     margin-right: 0%;
@@ -79,8 +79,8 @@ const DropDownMenu = styled.div`
   right: 15%;
   @media only screen and (max-width: 900px) {
     right: 1%;
-    width : 350px;
-    height : 250px;
+    width: 350px;
+    height: 250px;
   }
   height: 350px;
   overflow-y: scroll;
@@ -114,18 +114,11 @@ const Navbar = () => {
         <Link to="/profile/">
           <MenuIcons className="fa fa-user-circle"></MenuIcons>
         </Link>
-        <a open-modal="myModal">
-          krne baka
+        <a open-modal="newPostModal">
+          <MenuIcons className="fa fa-plus" open-modal="myModal"></MenuIcons>
+          <NewPost ModalId="newPostModal"/>
         </a>
-        
-        <Modal modalId="myModal">
-          <h3>Modal header</h3>
-          <hr />
-          <p>Modal body</p>
-        </Modal>
-
       </MenuOptions>
-      
     </AppNavbar>
   );
 };

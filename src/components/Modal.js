@@ -27,11 +27,11 @@ const ModalContainer = styled.div`
 `;
 
 const ModalContent = styled.div`
-  max-width: 800px;
-  width: 90%;
+  max-width: 600px;
+  width: 100%;
   position: relative;
   margin: 5% auto;
-  padding: 20px;
+  /* padding: 20px; */
   border-radius: 3px;
   background: #fff;
   z-index: 99999;
@@ -79,7 +79,7 @@ const Modal = (props) => {
     <ModalContainer id={props.modalId}>
       <ModalContent>
         {props.children}
-        <CloseBtn onClick={()=>closeModal()}>
+        <CloseBtn onClick={() => closeModal()}>
           <i className="fa fa-times"></i>
         </CloseBtn>
       </ModalContent>
