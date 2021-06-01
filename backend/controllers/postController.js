@@ -8,8 +8,7 @@ exports.Post = (req, res) => {
       res.status(404).send({
         msg: err,
       });
-    }
-    res.json(post);
+    } else res.json(post);
   });
 };
 

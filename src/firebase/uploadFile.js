@@ -1,8 +1,9 @@
 import { storage } from "./firebase";
 
 const upload_file = (imageAsFile, callback) => {
+  let timestamp = new Date().getTime();
   const uploadTask = storage
-    .ref(`/images/${imageAsFile.name}`)
+    .ref(`/images/${timestamp}${imageAsFile.name}`)
     .put(imageAsFile);
   uploadTask.on(
     "state_changed",
@@ -19,7 +20,7 @@ const upload_file = (imageAsFile, callback) => {
       // gets the download url then sets the image from firebase as the value for the imgUrl key:
       storage
         .ref("images")
-        .child(imageAsFile.name)
+        .child(timestamp+imageAsFile.name)
         .getDownloadURL()
         .then((fireBaseUrl) => {
           callback(fireBaseUrl);
