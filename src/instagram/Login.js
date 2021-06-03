@@ -4,9 +4,10 @@ import { useForm } from "react-hook-form";
 import useToken from "../hooks/useToken";
 import { Link } from "react-router-dom";
 import { Logo, InputContainer, Input, SubmitBtn, ErrorMsg } from "./Signup";
-import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router";
 import { login } from "../services/authService";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { MyLoginContext } from "../App";
 
 const LoginPage = () => {
   const {
@@ -16,22 +17,23 @@ const LoginPage = () => {
   } = useForm({
     mode: "all",
   });
-
-  const { token, setToken } = useToken();
-  const history = useHistory();
+  const { setIsLogin } = useContext(MyLoginContext);
   const [loginErr, setLoginErr] = useState(false);
+
+  const history = useHistory();
 
   const onSubmit = async (data) => {
     var response = await login(data);
     console.log(response);
     if (!response.data.error) {
-      setToken(response.data.token);
+      localStorage.setItem("token", response.data.token);
+      setIsLogin(true);
       history.push("/");
-      return;
+    } else {
+      console.log(loginErr);
+      setLoginErr(true);
+      console.log(loginErr);
     }
-    console.log(loginErr);
-    setLoginErr(true);
-    console.log(loginErr);
   };
 
   return (
@@ -119,6 +121,9 @@ const LoginPage = () => {
       <br />
     </>
   );
+  // return (
+  //   <h2>Logina</h2>
+  // )
 };
 
 export default LoginPage;

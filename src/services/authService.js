@@ -1,15 +1,9 @@
 import axios from "axios";
 
 export const getToken = () => {
-  const tokenString = localStorage.getItem("token");
-  const userToken = JSON.parse(tokenString);
-  return userToken;
-};
-
-var config = {
-  headers: {
-    Authorization: getToken(),
-  },
+  const token = localStorage.getItem("token");
+  console.log("latest token :- " + token);
+  return token;
 };
 
 export const login = async (data) => {
@@ -30,52 +24,88 @@ export const signup = async (data) => {
 };
 
 export const getSuggestions = async () => {
-  var response = await axios.get("/users/getSuggestions", config);
+  let token = localStorage.getItem("token");
+  const response = await axios({
+    method: "GET",
+    url: "/users/getSuggestions",
+    headers: { Authorization: `${token}` },
+  });
   return response;
 };
 
 export const sendFriendRequest = async (username) => {
-  var response = await axios.post(
-    "/users/sendFriendRequest/" + username,
-    null,
-    config
-  );
+  let token = localStorage.getItem("token");
+  var response = await axios({
+    method: "POST",
+    url: "/users/sendFriendRequest/" + username,
+    data: null,
+    headers: { Authorization: `${token}` },
+  });
   return response;
 };
 
 export const getLoggedInUser = async () => {
-  var response = await axios.get("/users/getLoggedinUser", config);
-  return response;
+  let token = localStorage.getItem("token");
+  const response = await axios({
+    method: "GET",
+    url: "/users/getLoggedinUser",
+    headers: { Authorization: `${token}` },
+  });
+  console.log(response);
+  const user = response.data;
+  return user;
 };
 
 export const getFrdRequests = async () => {
-  var response = await axios.get("/users/getFrdRequests/", config);
-  return response;
+  let token = localStorage.getItem("token");
+  const response = await axios({
+    method: "GET",
+    url: "/users/getFrdRequests/",
+    headers: { Authorization: `${token}` },
+  });
+  const requests = response.data;
+  return requests;
 };
 
 export const acceptFrdRequest = async (username) => {
+  let token = localStorage.getItem("token");
   var response = await axios.post(
     "/users/acceptFriendRequest/" + username,
     null,
-    config
+    { Authorization: `${token}` }
   );
   return response;
 };
 
 export const deleteFrdRequest = async (username) => {
+  let token = localStorage.getItem("token");
   var response = await axios.post(
     "/users/deleteFriendRequest/" + username,
     null,
-    config
+    { Authorization: `${token}` }
   );
   return response;
 };
 
 export const unfollowUser = async (username) => {
-  var response = await axios.post(
-    "/users/unfollowUser/" + username,
-    null,
-    config
-  );
+  let token = localStorage.getItem("token");
+  var response = await axios.post("/users/unfollowUser/" + username, null, {
+    Authorization: `${token}`,
+  });
   return response;
+};
+
+export const isLoggedIn = () => {
+  let token = localStorage.getItem("token");
+  console.log("mtoken:-" + token);
+  if (
+    token === "null" ||
+    token === "undefined" ||
+    token === "" ||
+    token === undefined ||
+    token === null
+  ) {
+    return false;
+  }
+  return true;
 };

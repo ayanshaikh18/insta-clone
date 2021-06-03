@@ -2,9 +2,8 @@ import axios from "axios";
 import { getLoggedInUser } from "./authService";
 
 export const getToken = () => {
-  const tokenString = localStorage.getItem("token");
-  const userToken = JSON.parse(tokenString);
-  return userToken;
+  const token = localStorage.getItem("token");
+  return token;
 };
 
 var config = {
@@ -14,17 +13,28 @@ var config = {
 };
 
 export const postPost = async (data) => {
-  console.log(data);
-  var res = await getLoggedInUser();
-  console.log(res.data);
-  var response = await axios.post(
-    "/posts/",
-    {
+  let token = localStorage.getItem("token");
+  var user = await getLoggedInUser();
+  var response = await axios({
+    method: "POST",
+    url: "/posts/",
+    data: {
       caption: data.caption,
-      postedBy: res.data.name,
+      postedBy: user.name,
       postedImage: data.postedImage,
     },
-    config
-  );
+    headers: { Authorization: `${token}` },
+  });
   return response;
+};
+
+export const getPosts = async () => {
+  let token = localStorage.getItem("token");
+  var response = await axios({
+    method: "GET",
+    url: "/posts/",
+    headers: { Authorization: `${token}` },
+  });
+  console.log(response.data);
+  return response.data
 };

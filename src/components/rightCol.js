@@ -1,8 +1,12 @@
 import styled from "styled-components";
 import defaultDp from "../assets/images/default.jpg";
-import pic1 from "../assets/images/pic1.jpeg";
 import { useEffect, useState } from "react";
-import { getSuggestions, sendFriendRequest } from "../services/authService";
+import {
+  getSuggestions,
+  sendFriendRequest,
+  getLoggedInUser,
+} from "../services/authService";
+import Loading from "./Loading"
 
 const Container = styled.div`
   padding: 15px;
@@ -70,6 +74,14 @@ const Profile = (props) => {
 };
 
 const RightCol = () => {
+  const [loggedInUser, setLoggedInUser] = useState();
+
+  useEffect(async() => {
+    var user = await getLoggedInUser();
+    console.log(user);
+    setLoggedInUser(user);
+  }, []);
+
   const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
@@ -85,36 +97,47 @@ const RightCol = () => {
 
   return (
     <Container>
-      <Profile
-        text="switch"
-        pic={pic1}
-        username="_.ayan18"
-        name="Ayan Shaikh"
-        height="60"
-        width="60"
-        first="true"
-      />
-      <br />
-      <h4 style={{ color: "grey" }}>Suggestions For You</h4>
-
-      {!suggestions ? (
-        <h3>Nothing To Show</h3>
+      {!loggedInUser ? (
+        <Loading />
       ) : (
-        suggestions.map((suggestion) => (
+        <>
           <Profile
-            text="follow"
+            text=""
             pic={
-              suggestion.profilePic != null ? suggestion.profilePic : defaultDp
+              loggedInUser.profilePic != null
+                ? loggedInUser.profilePic
+                : defaultDp
             }
-            username={suggestion.name}
-            name={suggestion.displayName}
-            height="35"
-            width="35"
-            key={suggestion._id}
+            username={loggedInUser.name}
+            name={loggedInUser.displayName}
+            height="60"
+            width="60"
+            first="true"
           />
-        ))
-      )}
+          <br />
+          <h4 style={{ color: "grey" }}>Suggestions For You</h4>
 
+          {!suggestions ? (
+            <h3>Nothing To Show</h3>
+          ) : (
+            suggestions.map((suggestion) => (
+              <Profile
+                text="follow"
+                pic={
+                  suggestion.profilePic != null
+                    ? suggestion.profilePic
+                    : defaultDp
+                }
+                username={suggestion.name}
+                name={suggestion.displayName}
+                height="35"
+                width="35"
+                key={suggestion._id}
+              />
+            ))
+          )}
+        </>
+      )}
       <Footer>© - Mahammadayan Shaikh</Footer>
     </Container>
   );

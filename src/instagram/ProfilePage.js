@@ -17,13 +17,6 @@ const Wrapper = styled.div`
 `;
 
 const ProfilePage = () => {
-  const { token, setToken } = useToken();
-  const history = useHistory();
-
-  if (!token) {
-    history.push("/login");
-  }
-
   const closeDropDown = () => {
     document.getElementById("dropdown").style.display = "none";
   };

@@ -6,6 +6,7 @@ import ayan from "../assets/images/ayan.png";
 import { useState, useEffect } from "react";
 import { getFrdRequests, getLoggedInUser } from "../services/authService";
 import FriendRequest from "./FriendRequest";
+import Loading from "./Loading";
 
 const Container = styled.div`
   padding: 15px;
@@ -64,30 +65,32 @@ const Notifications = () => {
   const [loggedInUser, setLoggedInUser] = useState();
 
   useEffect(async () => {
-    var response = await getLoggedInUser();
-    console.log(response.data);
-    setLoggedInUser(response.data);
+    var user = await getLoggedInUser();
+    setLoggedInUser(user);
   }, []);
 
   const showFrdRequests = async () => {
-    let response = await getFrdRequests();
-    console.log(response.data);
     setViewingFrdRequests(true);
-    setFrdRequests(response.data);
+    let requests = await getFrdRequests();
+    setFrdRequests(requests);
   };
 
   return (
     <>
       {viewingFrdRequests ? (
         <>
-          {frdRequests.map((req) => (
-            <>
-              <Container isFrdReq="true" key={req._id}>
-                <FriendRequest req={req} loggedInUser={loggedInUser} />
-              </Container>
-              <Hr />
-            </>
-          ))}
+          {!frdRequests ? (
+            <Loading />
+          ) : (
+            frdRequests.map((req) => (
+              <>
+                <Container isFrdReq="true" key={req._id}>
+                  <FriendRequest req={req} loggedInUser={loggedInUser} />
+                </Container>
+                <Hr />
+              </>
+            ))
+          )}
         </>
       ) : (
         <>
