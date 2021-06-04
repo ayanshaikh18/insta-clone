@@ -42,5 +42,10 @@ router.post(
   verifyTokenMiddleWare.verifyToken,
   userHandlers.unfollowuser
 );
+router.get(
+  "/:username",
+  verifyTokenMiddleWare.verifyToken,
+  userHandlers.getUserProfile
+);
 
 module.exports = router;

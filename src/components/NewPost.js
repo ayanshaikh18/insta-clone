@@ -11,7 +11,7 @@ import uploadFile from "../firebase/uploadFile";
 import { useForm } from "react-hook-form";
 import { postPost } from "../services/postService";
 import { useHistory } from "react-router-dom";
-import postSuccess from "../assets/images/postSuccess.jpg"
+import postSuccess from "../assets/images/postSuccess.jpg";
 
 const Header = styled.div`
   border-bottom: 1px solid #d9d9d9;
@@ -71,7 +71,7 @@ const NewPost = (props) => {
   };
 
   return (
-    <Modal modalId={props.ModalId}>
+    <Modal modalId={props.ModalId} callback={() => setPosted(false)}>
       {!posted ? (
         <>
           <Header>
@@ -120,14 +120,11 @@ const NewPost = (props) => {
         </>
       ) : (
         <>
-          <br /><br />
+          <br />
+          <br />
           <InputContainer>
-            <img
-              src={postSuccess}
-              height="150"
-              width="150"
-            /> <br />
-            <h3 style={{color:"green"}}>Posted Successfully</h3>
+            <img src={postSuccess} height="150" width="150" /> <br />
+            <h3 style={{ color: "green" }}>Posted Successfully</h3>
           </InputContainer>
         </>
       )}

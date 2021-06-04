@@ -64,6 +64,8 @@ const Modal = (props) => {
   };
 
   const closeModal = () => {
+    var callback = props.callback;
+    callback()
     $("#" + props.modalId).css({
       display: "none",
       opacity: 0,

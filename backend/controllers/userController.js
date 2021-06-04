@@ -2,6 +2,7 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 var User = require("../models/User");
 const FriendRequest = require("../models/FriendRequest");
+const Post = require("../models/Post");
 
 exports.register = (req, res) => {
   var newUser = new User(req.body);
@@ -262,4 +263,40 @@ exports.unfollowuser = (req, res) => {
       }
     }
   );
+};
+
+exports.getUserProfile = (req, res) => {
+  let name = req.params.username;
+  User.findOne({ name: name }, (err, user) => {
+    if (err) {
+      res.status(400).send({ msg: "Something Went Wrong!!!" });
+    } else {
+      if (!user) res.json({ msg: "Not Found" });
+      else {
+        Post.find({ "postedBy.name": name }, (err, posts) => {
+          if (err) {
+            res.status(400).send({ msg: "Something Went Wrong!!!" });
+          } else {
+            if (
+              user.name == req.user.name ||
+              user.followers.includes(req.user.name)
+            ) {
+              res.json({
+                user: user,
+                following: true,
+                posts: posts,
+                postsCnt: posts.length,
+              });
+            } else {
+              res.json({
+                user: user,
+                following: false,
+                postsCnt: posts.length,
+              });
+            }
+          }
+        });
+      }
+    }
+  });
 };
