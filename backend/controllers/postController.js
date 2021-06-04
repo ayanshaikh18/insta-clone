@@ -14,10 +14,16 @@ exports.Post = (req, res) => {
 
 exports.getPostsForLoggedinUser = (req, res) => {
   var user = req.user;
+  var start = req.query.start;
   Post.find(
     {
-      postedBy: { $in: user.following },
+      $or: [
+        { "postedBy.name": { $in: user.following } },
+        { "postedBy.name": req.user.name },
+      ],
     },
+    null,
+    { skip: parseInt(start), limit: 10, sort: { time: -1 } },
     (err, posts) => {
       if (err) {
         console.log(err);

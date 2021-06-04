@@ -32,9 +32,19 @@ var CommentSchema = new Schema({
   },
 });
 
+var UserSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  profilePic: {
+    type: String,
+  },
+});
+
 var PostSchema = new Schema({
   postedBy: {
-    type: String,
+    type: UserSchema,
     required: true,
   },
   caption: {
@@ -46,7 +56,7 @@ var PostSchema = new Schema({
     type: String,
     required: true,
     unique: true,
-  }, 
+  },
   comments: {
     type: Array(CommentSchema),
     default: [],

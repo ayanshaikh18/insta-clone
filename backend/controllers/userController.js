@@ -178,7 +178,6 @@ exports.suggestionList = (req, res) => {
         console.log(err);
         res.status(401).send(err);
       } else {
-        console.log(requests);
         let tos = requests.map((r) => r.to);
         let froms = requests.map((r) => r.from);
         User.find(

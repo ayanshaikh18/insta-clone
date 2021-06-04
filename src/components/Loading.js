@@ -5,6 +5,7 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 25px;
 `;
 
 const Loader = styled.img`

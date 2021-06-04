@@ -2,72 +2,10 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 import Loading from "./Loading";
 import { getPosts } from "../services/postService";
-import pic1 from "../assets/images/pic1.jpeg";
-import pic2 from "../assets/images/pic2.jpeg";
-import pic3 from "../assets/images/pic3.jpg";
-import ayan from "../assets/images/ayan.png";
+import defaultDp from "../assets/images/default.jpg";
+import InfiniteScroll from "react-infinite-scroll-component";
 
-import post1 from "../assets/images/post3.jfif";
-import mahi from "../assets/images/MAhi.jfif";
-import rohit from "../assets/images/Rohit.jfif";
-import jwalit from "../assets/images/Jwalit.jfif";
-import jwalit1 from "../assets/images/Jwalit1.jfif";
-import saloni from "../assets/images/Saloni.jfif";
-import shahid from "../assets/images/Shahid.jfif";
-import anushka from "../assets/images/anushka.jpeg";
 import { getLoggedInUser } from "../services/authService";
-
-// const posts = [
-//   {
-//     url: jwalit,
-//     username: "jwalit21",
-//     caption: "All this hustle and bustle makes me feel exhilarated!!!",
-//     profilePic: jwalit,
-//     uploadTime: "53m ago",
-//   },
-//   {
-//     url: pic2,
-//     username: "viratkohli",
-//     caption: "Yes, it's better than drugs. Jeremy! 🥰",
-//     profilePic: pic1,
-//     uploadTime: "53m ago",
-//   },
-//   {
-//     url: post1,
-//     username: "_.ayan18",
-//     caption: "Smile is the preetiest thing you can wear. ",
-//     profilePic: pic2,
-//     uploadTime: "10m ago",
-//   },
-//   {
-//     url: shahid,
-//     username: "shahid2002",
-//     caption: "",
-//     profilePic: shahid,
-//     uploadTime: "16h ago",
-//   },
-//   {
-//     url: mahi,
-//     username: "mahi7781",
-//     caption: "🏆🏆🏆",
-//     profilePic: mahi,
-//     uploadTime: "21h ago",
-//   },
-//   {
-//     url: rohit,
-//     username: "rohit.sharma",
-//     caption: "",
-//     profilePic: rohit,
-//     uploadTime: "1h ago",
-//   },
-//   {
-//     url: anushka,
-//     username: "Anushka.Sharma",
-//     caption: "",
-//     profilePic: anushka,
-//     uploadTime: "1h ago",
-//   },
-// ];
 
 const PostCard = styled.div`
   background-color: #fff;
@@ -78,10 +16,11 @@ const PostCard = styled.div`
 
 const PostHeader = styled.div`
   padding: 10px;
-  font-size: 13px;
   font-weight: bold;
   display: grid;
   grid-template-columns: 10% 90%;
+  align-items: center;
+  justify-content: center;
 `;
 
 const PostImage = styled.img`
@@ -108,64 +47,124 @@ const CommentInput = styled.input`
 `;
 
 const Posts = () => {
-  const [posts, setPosts] = useState();
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [postCounter, setPostCounter] = useState(0);
+  const [hasMorePosts, setMorePosts] = useState(true);
 
   useEffect(async () => {
     var posts = await getPosts();
     setPosts(posts);
+    setLoading(false);
   }, []);
 
-  const [loggedInUser, setLoggedInUser] = useState();
-  useEffect(async () => {
-    var user = await getLoggedInUser();
-    console.log(user);
-    setLoggedInUser(user);
-  }, []);
+  const convertDate = (dateString) => {
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    let date = new Date(dateString);
+    var day = date.getDay();
+    var month = monthNames[date.getMonth()];
+    var hour = date.getHours();
+    var min = date.getMinutes();
+    return day + " " + month + " " + hour + ":" + min;
+  };
+
+  const loadFunc = async () => {
+    let curCnt = postCounter;
+    setPostCounter(curCnt + 10);
+    var newPosts = await getPosts(curCnt + 10);
+    console.log(newPosts);
+    if (newPosts.length == 0) {
+      setMorePosts(false);
+    } else {
+      setMorePosts(true);
+      setPosts(posts.concat(newPosts));
+    }
+  };
 
   return (
-    <div>
-      {posts ? (
+    <>
+      {!loading ? (
         <>
-          {posts.map((post) => (
-            <PostCard>
-              {/* <PostHeader>
-                <div>
-                  <img
-                    height="35"
-                    width="35"
-                    style={{ borderRadius: "50%" }}
-                    src={post.profilePic}
-                  />
-                </div>
-                <div style={{ paddingTop: "10px" }}>{post.username}</div>
-              </PostHeader> */}
-              <PostImage src={post.postedImage} />
-              <PostBottom>
-                <div style={{ fontSize: "25px" }}>
-                  <i className="fa fa-heart-o"></i> &nbsp;
-                  <i className="fa fa-comment-o"></i> &nbsp;
-                  <i className="fa fa-paper-plane"></i> <br />
-                </div>
-                <div style={{ paddingTop: "10px", fontSize: "15px" }}>
-                  <b>{post.postedBy}</b> &nbsp;
-                  {post.caption} <br />
-                  10m ago
-                </div>
-              </PostBottom>
-              <CommentBox>
-                <div style={{ padding: "20px", fontSize: "17px" }}>😄</div>
-                <CommentInput placeholder="Add a comment..." />
-                <a href="#" style={{ textDecoration: "none", padding: "20px" }}>
-                  Post
-                </a>
-              </CommentBox>
-            </PostCard>
-          ))}
+          <InfiniteScroll
+            dataLength={posts.length} //This is important field to render the next data
+            next={loadFunc}
+            hasMore={hasMorePosts}
+            loader={<Loading />}
+            endMessage={
+              <p style={{ textAlign: "center" }}>
+                <b>Yay! You have seen it all</b>
+              </p>
+            }
+          >
+            {posts.map((post) => (
+              <PostCard key={post._id}>
+                <PostHeader>
+                  <div>
+                    <img
+                      height="40"
+                      width="40"
+                      style={{ borderRadius: "50%" }}
+                      src={
+                        post.postedBy.profilePic == null
+                          ? defaultDp
+                          : post.postedBy.profilePic
+                      }
+                    />
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "17px",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    {post.postedBy.name}
+                  </div>
+                </PostHeader>
+                <PostImage src={post.postedImage} />
+                <PostBottom>
+                  <div style={{ fontSize: "25px" }}>
+                    <i className="fa fa-heart-o"></i> &nbsp;
+                    <i className="fa fa-comment-o"></i> &nbsp;
+                    <i className="fa fa-paper-plane"></i> <br />
+                  </div>
+                  <div style={{ paddingTop: "10px", fontSize: "15px" }}>
+                    <b>{post.postedBy.name}</b> &nbsp;
+                    {post.caption} <br />
+                    {convertDate(post.time)}
+                  </div>
+                </PostBottom>
+                <CommentBox>
+                  <div style={{ padding: "20px", fontSize: "17px" }}>😄</div>
+                  <CommentInput placeholder="Add a comment..." />
+                  <a
+                    href="#"
+                    style={{ textDecoration: "none", padding: "20px" }}
+                  >
+                    Post
+                  </a>
+                </CommentBox>
+              </PostCard>
+            ))}
+          </InfiniteScroll>
         </>
       ) : (
         <Loading />
       )}
-    </div>
+    </>
   );
 };
 
