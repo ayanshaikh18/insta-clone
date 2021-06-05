@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import ayan from "../assets/images/ayan.png";
+import defaultDp from "../assets/images/default.jpg";
 
 const Container = styled.div`
   margin-top: 10px;
@@ -39,44 +40,44 @@ const EditBtn = styled.button`
   border: 1px solid #d9d9d9;
 `;
 
-const ProfileTop = () => {
+const ProfileTop = (props) => {
   return (
     <Container>
-      <ProfilePic src={ayan} />
+      <ProfilePic src={props.user.ProfilePic ? props.user.ProfilePic : defaultDp} />
       <ProfileDetailsContainer>
         <div>
           <h2 style={{ fontWeight: "normal" }}>
-            _.ayan18 &nbsp; &nbsp;
+          {props.user.name} &nbsp; &nbsp;
             <EditBtn>Edit Profile</EditBtn> &nbsp;&nbsp;
-            <i class="fa fa-cog" aria-hidden="true"></i>
+            {/* <i class="fa fa-cog" aria-hidden="true"></i> */}
           </h2>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "auto auto auto" }}>
           <div>
-            <b>10</b> posts
+            <b>{props.postsCnt}</b> posts
           </div>
           <div>
-            <b>500</b> followers
+            <b>{props.user.followers.length}</b> followers
           </div>
           <div>
-            <b>650</b> following
+            <b>{props.user.following.length}</b> following
           </div>
         </div>
         <br />
         <div>
           <div>
-            <b>Ayan Shaikh</b>
+            <b>{props.user.displayName}</b>
           </div>
           <div style={{ paddingTop: "3px" }}>
-            Grow up, Glow up, Blow up !!!{" "}
+            {props.user.bio}
           </div>
           <div style={{ paddingTop: "3px", fontWeight: "550" }}>
             <a
               style={{ textDecoration: "none", color: "darkblue" }}
-              href="https://ayanshaikh18.github.io/Portfolio"
+              href={props.user.website}
               target="_blank"
             >
-              ayanshaikh18.github.io/Portfolio
+              {props.user.website}
             </a>
           </div>
         </div>

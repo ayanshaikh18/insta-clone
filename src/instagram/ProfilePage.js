@@ -3,8 +3,10 @@ import styled from "styled-components";
 import ProfileTop from "../components/ProfileTop";
 import Highlights from "../components/Highlights";
 import ProfileBottom from "../components/ProfileBottom";
-import useToken from "../hooks/useToken";
-import { useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { getProfile } from "../services/authService";
+import Loading from "../components/Loading";
 
 const Wrapper = styled.div`
   margin-top: 55px;
@@ -20,17 +22,52 @@ const ProfilePage = () => {
   const closeDropDown = () => {
     document.getElementById("dropdown").style.display = "none";
   };
+
+  const { username } = useParams();
+  const [profile, setProfile] = useState();
+
+  useEffect(async () => {
+    var data = await getProfile(username);
+    const { user, following, postsCnt, posts } = data;
+    if (following)
+      setProfile({
+        user,
+        following,
+        postsCnt,
+        posts,
+      });
+    else
+      setProfile({
+        user,
+        following,
+        postsCnt,
+      });
+  }, []);
+
   return (
     <>
       <Navbar />
       <Wrapper onClick={() => closeDropDown()}>
-        <div></div>
-        <div>
-          <ProfileTop />
-          <Highlights />
-          <ProfileBottom />
-        </div>
-        <div></div>
+        {profile ? (
+          <>
+            <div></div>
+            <div>
+              <ProfileTop user={profile.user} postsCnt={profile.postsCnt} />
+              {/* <Highlights /> */}
+              <ProfileBottom
+                posts={profile.posts}
+                following={profile.following}
+              />
+            </div>
+            <div></div>
+          </>
+        ) : (
+          <>
+            <div></div>
+            <Loading />
+            <div></div>
+          </>
+        )}
       </Wrapper>
     </>
   );

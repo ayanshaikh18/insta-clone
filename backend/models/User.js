@@ -38,6 +38,9 @@ var UserScheme = new Schema(
       type: String,
       default: "",
     },
+    website: {
+      type: String,
+    },
   },
   { timestamp: true }
 );

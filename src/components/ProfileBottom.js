@@ -62,31 +62,52 @@ const Post = styled.img`
   height: 100%;
 `;
 
-const ProfileBottom = () => {
+const MessageBox = styled.div`
+  width: 100%;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: 1px solid #d9d9d9;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+`;
+
+const ProfileBottom = (props) => {
   return (
     <Container>
-      <Menu>
-        <MenuItem active>
-          <i class="fa fa-th" aria-hidden="true"></i> &nbsp; Posts
-        </MenuItem>
-        <MenuItem>
-          <i class="fa fa-th" aria-hidden="true"></i> &nbsp;IGTV
-        </MenuItem>
-        <MenuItem>
-          <i class="fa fa-bookmark-o" aria-hidden="true"></i> &nbsp;Saved
-        </MenuItem>
-        <MenuItem>
-          <i class="fa fa-user-circle-o" aria-hidden="true"></i> &nbsp;Tagged
-        </MenuItem>
-      </Menu>
+      {props.following ? (
+        <>
+          <Menu>
+            <MenuItem active>
+              <i class="fa fa-th" aria-hidden="true"></i> &nbsp; Posts{" "}
+            </MenuItem>
+            <MenuItem>
+              <i class="fa fa-th" aria-hidden="true"></i> &nbsp;IGTV
+            </MenuItem>
+            <MenuItem>
+              <i class="fa fa-bookmark-o" aria-hidden="true"></i> &nbsp;Saved
+            </MenuItem>
+            <MenuItem>
+              <i class="fa fa-user-circle-o" aria-hidden="true"></i>{" "}
+              &nbsp;Tagged
+            </MenuItem>
+          </Menu>
 
-      <PostsContainer>
-        {posts.map((post) => (
-          <div style={{ padding: "10px" }}>
-            <Post src={post.url} />{" "}
-          </div>
-        ))}
-      </PostsContainer>
+          <PostsContainer>
+            {props.posts.map((post) => (
+              <div style={{ padding: "10px" }}>
+                <Post src={post.postedImage} />{" "}
+              </div>
+            ))}
+          </PostsContainer>
+        </>
+      ) : (
+        <MessageBox>
+          <h2>This Account is Private.</h2>
+          <h3>Follow to see their posts.</h3>
+        </MessageBox>
+      )}
     </Container>
   );
 };

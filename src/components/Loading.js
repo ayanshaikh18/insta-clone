@@ -6,6 +6,8 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   margin: 25px;
+  width: 100%;
+  text-align: center;
 `;
 
 const Loader = styled.img`

@@ -109,3 +109,13 @@ export const isLoggedIn = () => {
   }
   return true;
 };
+
+export const getProfile = async(username) => {
+  let token = localStorage.getItem("token");
+  var response = await axios({
+    method: "GET",
+    url: "/users/" + username,
+    headers: { Authorization: `${token}` },
+  });
+  return response.data;
+};

@@ -2,7 +2,9 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../assets/images/logo.png";
 import Notifications from "./Notifications";
-import NewPost from "./NewPost"
+import NewPost from "./NewPost";
+import { getLoggedInUser } from "../services/authService";
+import { useEffect, useState } from "react";
 
 const AppNavbar = styled.nav`
   background-color: #ffffff;
@@ -95,6 +97,14 @@ const Navbar = () => {
     document.getElementById("dropdown").style.display = displayStyle;
   };
 
+  const [loggedInUser, setLoggedInUser] = useState();
+
+  useEffect(async () => {
+    var user = await getLoggedInUser();
+    console.log(user);
+    setLoggedInUser(user);
+  }, []);
+
   return (
     <AppNavbar>
       <Logo>
@@ -111,12 +121,14 @@ const Navbar = () => {
         <DropDownMenu id="dropdown">
           <Notifications />
         </DropDownMenu>
-        <Link to="/profile/">
-          <MenuIcons className="fa fa-user-circle"></MenuIcons>
-        </Link>
+        {loggedInUser && (
+          <Link to={`/profile/${loggedInUser.name}`}>
+            <MenuIcons className="fa fa-user-circle"></MenuIcons>
+          </Link>
+        )}
         <a open-modal="newPostModal">
           <MenuIcons className="fa fa-plus" open-modal="myModal"></MenuIcons>
-          <NewPost ModalId="newPostModal"/>
+          <NewPost ModalId="newPostModal" />
         </a>
       </MenuOptions>
     </AppNavbar>

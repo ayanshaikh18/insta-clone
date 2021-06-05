@@ -28,8 +28,7 @@ exports.getPostsForLoggedinUser = (req, res) => {
       if (err) {
         console.log(err);
         res.status(401).send(err);
-      }
-      res.json(posts);
+      } else res.json(posts);
     }
   );
 };
@@ -46,8 +45,7 @@ exports.postComment = (req, res) => {
       if (err) {
         console.log(err);
         res.status(500).send({ msg: "Something Went Wrong!!!" });
-      }
-      res.send(suc);
+      } else res.send(suc);
     }
   );
 };
@@ -67,8 +65,7 @@ exports.postReply = (req, res) => {
       if (err) {
         console.log(err);
         res.status(500).send({ msg: "Something Went Wrong!!!" });
-      }
-      res.send(suc);
+      } else res.send(suc);
     }
   );
 };
@@ -90,9 +87,10 @@ exports.likePost = (req, res) => {
             if (err) {
               console.log(err);
               res.status(500).send({ msg: "Something Went Wrong!!!" });
+            } else {
+              console.log(suc);
+              res.json({ msg: "Post Unliked" });
             }
-            console.log(suc);
-            res.json({ msg: "Post Unliked" });
           }
         );
       } else {
@@ -107,9 +105,10 @@ exports.likePost = (req, res) => {
             if (err) {
               console.log(err);
               res.status(500).send({ msg: "Something Went Wrong!!!" });
+            } else {
+              console.log(suc);
+              res.json({ msg: "Post Liked" });
             }
-            console.log(suc);
-            res.json({ msg: "Post Liked" });
           }
         );
       }

@@ -40,7 +40,7 @@ function App() {
           <Route exact={true} path="/signup">
             {isLogin ? <Redirect to="/" /> : <Signup />}
           </Route>
-          <Route exact={true} path="/profile">
+          <Route exact={true} path="/profile/:username">
             {isLogin ? <ProfilePage /> : <Redirect to="/login" />}
           </Route>
         </Switch>
