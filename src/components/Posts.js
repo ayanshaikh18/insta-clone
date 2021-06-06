@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import Loading from "./Loading";
-import { getPosts } from "../services/postService";
+import { getPosts, likePost } from "../services/postService";
 import defaultDp from "../assets/images/default.jpg";
 import InfiniteScroll from "react-infinite-scroll-component";
-
+import "../App.css";
 import { getLoggedInUser } from "../services/authService";
 
 const PostCard = styled.div`
@@ -46,18 +46,7 @@ const CommentInput = styled.input`
   }
 `;
 
-const Posts = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [postCounter, setPostCounter] = useState(0);
-  const [hasMorePosts, setMorePosts] = useState(true);
-
-  useEffect(async () => {
-    var posts = await getPosts();
-    setPosts(posts);
-    setLoading(false);
-  }, []);
-
+const Post = (props) => {
   const convertDate = (dateString) => {
     const monthNames = [
       "January",
@@ -81,11 +70,103 @@ const Posts = () => {
     return day + " " + month + " " + hour + ":" + min;
   };
 
+  const likeUnlikePost = async (event) => {
+    event.preventDefault();
+    let element = event.target;
+    if (element.classList.contains("fa-heart")) {
+      element.classList.add("fa-heart-o");
+      element.classList.remove("fa-heart");
+    } else {
+      element.classList.add("fa-heart");
+      element.classList.remove("fa-heart-o");
+    }
+    const data = await likePost(props.post._id);
+    const msg = data.msg;
+    if (msg == "Post Unliked") {
+      element.classList.add("fa-heart-o");
+      element.classList.remove("fa-heart");
+    } else {
+      element.classList.add("fa-heart");
+      element.classList.remove("fa-heart-o");
+    }
+  };
+
+  return (
+    <PostCard>
+      <PostHeader>
+        <div>
+          <img
+            height="40"
+            width="40"
+            style={{ borderRadius: "50%" }}
+            src={
+              props.post.postedBy.profilePic == null
+                ? defaultDp
+                : props.post.postedBy.profilePic
+            }
+          />
+        </div>
+        <div
+          style={{
+            fontSize: "17px",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          {props.post.postedBy.name}
+        </div>
+      </PostHeader>
+      <PostImage src={props.post.postedImage} />
+      <PostBottom>
+        <div style={{ fontSize: "25px" }}>
+          {props.post.likedBy.includes(props.loggedInUser.name) ? (
+            <i className="fa fa-heart" onClick={likeUnlikePost}></i>
+          ) : (
+            <i className="fa fa-heart-o" onClick={likeUnlikePost}></i>
+          )}{" "}
+          &nbsp;
+          <i className="fa fa-comment-o"></i> &nbsp;
+          <i className="fa fa-paper-plane"></i> <br />
+        </div>
+        <div style={{ paddingTop: "10px", fontSize: "15px" }}>
+          <b>{props.post.postedBy.name}</b> &nbsp;
+          {props.post.caption} <br />
+          {convertDate(props.post.time)}
+        </div>
+      </PostBottom>
+      <CommentBox>
+        <div style={{ padding: "20px", fontSize: "17px" }}>😄</div>
+        <CommentInput placeholder="Add a comment..." />
+        <a href="#" style={{ textDecoration: "none", padding: "20px" }}>
+          Post
+        </a>
+      </CommentBox>
+    </PostCard>
+  );
+};
+
+const Posts = () => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [postCounter, setPostCounter] = useState(0);
+  const [hasMorePosts, setMorePosts] = useState(true);
+  const [loggedInUser, setLoggedInUser] = useState();
+
+  useEffect(async () => {
+    var posts = await getPosts();
+    setPosts(posts);
+    setLoading(false);
+  }, []);
+
+  useEffect(async () => {
+    var user = await getLoggedInUser();
+    setLoggedInUser(user);
+  }, []);
+
   const loadFunc = async () => {
     let curCnt = postCounter;
     setPostCounter(curCnt + 10);
     var newPosts = await getPosts(curCnt + 10);
-    console.log(newPosts);
     if (newPosts.length == 0) {
       setMorePosts(false);
     } else {
@@ -96,10 +177,10 @@ const Posts = () => {
 
   return (
     <>
-      {!loading ? (
+      {!loading && loggedInUser ? (
         <>
           <InfiniteScroll
-            dataLength={posts.length} //This is important field to render the next data
+            dataLength={posts.length}
             next={loadFunc}
             hasMore={hasMorePosts}
             loader={<Loading />}
@@ -110,54 +191,7 @@ const Posts = () => {
             }
           >
             {posts.map((post) => (
-              <PostCard key={post._id}>
-                <PostHeader>
-                  <div>
-                    <img
-                      height="40"
-                      width="40"
-                      style={{ borderRadius: "50%" }}
-                      src={
-                        post.postedBy.profilePic == null
-                          ? defaultDp
-                          : post.postedBy.profilePic
-                      }
-                    />
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "17px",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    {post.postedBy.name}
-                  </div>
-                </PostHeader>
-                <PostImage src={post.postedImage} />
-                <PostBottom>
-                  <div style={{ fontSize: "25px" }}>
-                    <i className="fa fa-heart-o"></i> &nbsp;
-                    <i className="fa fa-comment-o"></i> &nbsp;
-                    <i className="fa fa-paper-plane"></i> <br />
-                  </div>
-                  <div style={{ paddingTop: "10px", fontSize: "15px" }}>
-                    <b>{post.postedBy.name}</b> &nbsp;
-                    {post.caption} <br />
-                    {convertDate(post.time)}
-                  </div>
-                </PostBottom>
-                <CommentBox>
-                  <div style={{ padding: "20px", fontSize: "17px" }}>😄</div>
-                  <CommentInput placeholder="Add a comment..." />
-                  <a
-                    href="#"
-                    style={{ textDecoration: "none", padding: "20px" }}
-                  >
-                    Post
-                  </a>
-                </CommentBox>
-              </PostCard>
+              <Post post={post} key={post._id} loggedInUser={loggedInUser} />
             ))}
           </InfiniteScroll>
         </>

@@ -273,29 +273,34 @@ exports.getUserProfile = (req, res) => {
     } else {
       if (!user) res.json({ msg: "Not Found" });
       else {
-        Post.find({ "postedBy.name": name }, (err, posts) => {
-          if (err) {
-            res.status(400).send({ msg: "Something Went Wrong!!!" });
-          } else {
-            if (
-              user.name == req.user.name ||
-              user.followers.includes(req.user.name)
-            ) {
-              res.json({
-                user: user,
-                following: true,
-                posts: posts,
-                postsCnt: posts.length,
-              });
+        Post.find(
+          { "postedBy.name": name },
+          null,
+          { sort: { time: -1 } },
+          (err, posts) => {
+            if (err) {
+              res.status(400).send({ msg: "Something Went Wrong!!!" });
             } else {
-              res.json({
-                user: user,
-                following: false,
-                postsCnt: posts.length,
-              });
+              if (
+                user.name == req.user.name ||
+                user.followers.includes(req.user.name)
+              ) {
+                res.json({
+                  user: user,
+                  following: true,
+                  posts: posts,
+                  postsCnt: posts.length,
+                });
+              } else {
+                res.json({
+                  user: user,
+                  following: false,
+                  postsCnt: posts.length,
+                });
+              }
             }
           }
-        });
+        );
       }
     }
   });

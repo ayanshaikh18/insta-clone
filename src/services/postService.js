@@ -28,13 +28,22 @@ export const postPost = async (data) => {
   return response;
 };
 
-export const getPosts = async (start=0) => {
+export const getPosts = async (start = 0) => {
   let token = localStorage.getItem("token");
   var response = await axios({
     method: "GET",
     url: `/posts?start=${start}`,
     headers: { Authorization: `${token}` },
   });
-  console.log(response.data);
+  return response.data;
+};
+
+export const likePost = async (postId) => {
+  let token = localStorage.getItem("token");
+  var response = await axios({
+    method: "POST",
+    url: `/posts/${postId}/like`,
+    headers: { Authorization: `${token}` },
+  });
   return response.data;
 };
