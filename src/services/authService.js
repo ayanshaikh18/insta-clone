@@ -69,28 +69,30 @@ export const getFrdRequests = async () => {
 
 export const acceptFrdRequest = async (username) => {
   let token = localStorage.getItem("token");
-  var response = await axios.post(
-    "/users/acceptFriendRequest/" + username,
-    null,
-    { Authorization: `${token}` }
-  );
+  var response = await axios({
+    method: "POST",
+    url: "/users/acceptFriendRequest/" + username,
+    headers: { Authorization: `${token}` },
+  });
   return response;
 };
 
 export const deleteFrdRequest = async (username) => {
   let token = localStorage.getItem("token");
-  var response = await axios.post(
-    "/users/deleteFriendRequest/" + username,
-    null,
-    { Authorization: `${token}` }
-  );
+  var response = await axios({
+    method: "POST",
+    url: "/users/deleteFriendRequest/" + username,
+    headers: { Authorization: `${token}` },
+  });
   return response;
 };
 
 export const unfollowUser = async (username) => {
   let token = localStorage.getItem("token");
-  var response = await axios.post("/users/unfollowUser/" + username, null, {
-    Authorization: `${token}`,
+  var response = await axios({
+    method: "POST",
+    url: "/users/unfollowUser/" + username,
+    headers: { Authorization: `${token}` },
   });
   return response;
 };
@@ -110,11 +112,24 @@ export const isLoggedIn = () => {
   return true;
 };
 
-export const getProfile = async(username) => {
+export const getProfile = async (username) => {
   let token = localStorage.getItem("token");
   var response = await axios({
     method: "GET",
     url: "/users/" + username,
+    headers: { Authorization: `${token}` },
+  });
+  return response.data;
+};
+
+export const getUsersDpAndDisplayNames = async (users) => {
+  let token = localStorage.getItem("token");
+  var response = await axios({
+    method: "POST",
+    url: "/users/getUsersDpAndDisplayNames/",
+    data: {
+      usernames: users,
+    },
     headers: { Authorization: `${token}` },
   });
   return response.data;

@@ -8,7 +8,7 @@ import { getFrdRequests, getLoggedInUser } from "../services/authService";
 import FriendRequest from "./FriendRequest";
 import Loading from "./Loading";
 
-const Container = styled.div`
+export const Container = styled.div`
   padding: 15px;
   display: grid;
   cursor: pointer;
@@ -57,6 +57,7 @@ export const Btn = styled.button`
   border-radius: 5px;
   margin-left: 7px;
   min-width: 70px;
+  cursor: pointer;
 `;
 
 const Notifications = () => {

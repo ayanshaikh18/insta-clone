@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import ayan from "../assets/images/ayan.png";
 import defaultDp from "../assets/images/default.jpg";
+import Followers from "./Followers-Following";
 
 const Container = styled.div`
   margin-top: 10px;
@@ -43,11 +44,13 @@ const EditBtn = styled.button`
 const ProfileTop = (props) => {
   return (
     <Container>
-      <ProfilePic src={props.user.ProfilePic ? props.user.ProfilePic : defaultDp} />
+      <ProfilePic
+        src={props.user.ProfilePic ? props.user.ProfilePic : defaultDp}
+      />
       <ProfileDetailsContainer>
         <div>
           <h2 style={{ fontWeight: "normal" }}>
-          {props.user.name} &nbsp; &nbsp;
+            {props.user.name} &nbsp; &nbsp;
             <EditBtn>Edit Profile</EditBtn> &nbsp;&nbsp;
             {/* <i class="fa fa-cog" aria-hidden="true"></i> */}
           </h2>
@@ -56,11 +59,13 @@ const ProfileTop = (props) => {
           <div>
             <b>{props.postsCnt}</b> posts
           </div>
-          <div>
+          <div style={{ cursor: "pointer" }} open-modal="FollowersModal">
             <b>{props.user.followers.length}</b> followers
+            <Followers ModalId="FollowersModal" title="Followers" members={props.user.followers}/>
           </div>
-          <div>
+          <div style={{ cursor: "pointer" }} open-modal="FollowingModal">
             <b>{props.user.following.length}</b> following
+            <Followers ModalId="FollowingModal" title="Following" members={props.user.following}/>
           </div>
         </div>
         <br />
@@ -68,9 +73,7 @@ const ProfileTop = (props) => {
           <div>
             <b>{props.user.displayName}</b>
           </div>
-          <div style={{ paddingTop: "3px" }}>
-            {props.user.bio}
-          </div>
+          <div style={{ paddingTop: "3px" }}>{props.user.bio}</div>
           <div style={{ paddingTop: "3px", fontWeight: "550" }}>
             <a
               style={{ textDecoration: "none", color: "darkblue" }}

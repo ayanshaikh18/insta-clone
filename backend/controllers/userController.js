@@ -300,3 +300,22 @@ exports.getUserProfile = (req, res) => {
     }
   });
 };
+
+exports.getUsersDpAndDisplayNames = (req, res) => {
+  User.find(
+    { name: { $in: req.body.usernames } },
+    {
+      name: 1,
+      displayName: 1,
+      profilePic: 1,
+    },
+    (err, users) => {
+      if (err) {
+        console.log(err);
+        res.status(401).send(err);
+      } else {
+        res.json(users);
+      }
+    }
+  );
+};

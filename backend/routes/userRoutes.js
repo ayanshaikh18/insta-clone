@@ -47,5 +47,10 @@ router.get(
   verifyTokenMiddleWare.verifyToken,
   userHandlers.getUserProfile
 );
+router.post(
+  "/getUsersDpAndDisplayNames/",
+  verifyTokenMiddleWare.verifyToken,
+  userHandlers.getUsersDpAndDisplayNames
+);
 
 module.exports = router;

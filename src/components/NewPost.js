@@ -13,11 +13,11 @@ import { postPost } from "../services/postService";
 import { useHistory } from "react-router-dom";
 import postSuccess from "../assets/images/postSuccess.jpg";
 
-const Header = styled.div`
+export const Header = styled.div`
   border-bottom: 1px solid #d9d9d9;
   display: flex;
   justify-content: center;
-  font-size: 20px;
+  font-size: 15px;
 `;
 
 const Body = styled.div`

@@ -55,7 +55,7 @@ const FriendRequest = (props) => {
             >
               Confirm
             </Btn>
-            <Btn bgColor="#fff" txtColor="#000">
+            <Btn  >
               Delete
             </Btn>
           </>

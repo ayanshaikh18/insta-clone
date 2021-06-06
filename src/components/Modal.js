@@ -27,12 +27,11 @@ const ModalContainer = styled.div`
 `;
 
 const ModalContent = styled.div`
-  max-width: 600px;
   width: 100%;
+  width: ${(props)=>props.width ? props.width : "600px"};
   position: relative;
   margin: 5% auto;
-  /* padding: 20px; */
-  border-radius: 3px;
+  border-radius: 15px;
   background: #fff;
   z-index: 99999;
   @media only screen and (max-width: 600px) {
@@ -54,6 +53,10 @@ const CloseBtn = styled.button`
   cursor: pointer;
 `;
 
+const ModalArea = styled.div`
+  overflow-x: auto;
+  max-height: 600px;
+`
 const Modal = (props) => {
   const openModal = () => {
     $("#" + props.modalId).css({
@@ -65,7 +68,7 @@ const Modal = (props) => {
 
   const closeModal = () => {
     var callback = props.callback;
-    callback()
+    if (callback) callback();
     $("#" + props.modalId).css({
       display: "none",
       opacity: 0,
@@ -79,8 +82,10 @@ const Modal = (props) => {
 
   return (
     <ModalContainer id={props.modalId}>
-      <ModalContent>
+      <ModalContent width={props.width}>
+        <ModalArea>
         {props.children}
+        </ModalArea>
         <CloseBtn onClick={() => closeModal()}>
           <i className="fa fa-times"></i>
         </CloseBtn>
