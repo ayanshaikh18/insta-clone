@@ -24,5 +24,10 @@ router.post(
   verifyTokenMiddleWare.verifyToken,
   postController.likePost
 );
+router.get(
+  "/:postId",
+  verifyTokenMiddleWare.verifyToken,
+  postController.getPost
+);
 
 module.exports = router;

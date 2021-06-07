@@ -115,3 +115,14 @@ exports.likePost = (req, res) => {
     }
   );
 };
+
+exports.getPost = (req, res) => {
+  Post.findOne({ _id: req.params.postId }, (err, post) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send({ msg: "Something Went Wrong!!!" });
+    } else {
+      res.json(post);
+    }
+  });
+};

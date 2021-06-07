@@ -5,7 +5,7 @@ import Story from "../components/stories";
 import RightCol from "../components/rightCol";
 import Posts from "../components/Posts";
 
-const Main = styled.div`
+export const Main = styled.div`
   position: relative;
   margin-top: 55px;
   display: grid;
@@ -19,7 +19,7 @@ const Main = styled.div`
   }
 `;
 
-const Col = styled.div`
+export const Col = styled.div`
   padding: 20px;
 `;
 

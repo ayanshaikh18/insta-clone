@@ -47,3 +47,24 @@ export const likePost = async (postId) => {
   });
   return response.data;
 };
+
+export const postComment = async (postId, comment) => {
+  let token = localStorage.getItem("token");
+  var response = await axios({
+    method: "POST",
+    url: `/posts/${postId}/comment`,
+    data: comment,
+    headers: { Authorization: `${token}` },
+  });
+  return response.data;
+};
+
+export const getPost = async (postId) => {
+  let token = localStorage.getItem("token");
+  var response = await axios({
+    method: "GET",
+    url: `/posts/${postId}`,
+    headers: { Authorization: `${token}` },
+  });
+  return response.data;
+};

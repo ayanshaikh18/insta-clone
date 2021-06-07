@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import Loading from "./Loading";
-import { getPosts, likePost } from "../services/postService";
+import { getPosts, likePost, postComment } from "../services/postService";
 import defaultDp from "../assets/images/default.jpg";
 import InfiniteScroll from "react-infinite-scroll-component";
 import "../App.css";
 import { getLoggedInUser } from "../services/authService";
+import { useHistory } from "react-router";
 
 const PostCard = styled.div`
   background-color: #fff;
@@ -31,14 +32,14 @@ const PostBottom = styled.div`
   padding: 10px;
 `;
 
-const CommentBox = styled.div`
+export const CommentBox = styled.div`
   border-top: 1px solid #d9d9d9;
   display: grid;
   grid-template-columns: 10% 80% 10%;
 `;
 
-const CommentInput = styled.input`
-  padding: 20px;
+export const CommentInput = styled.input`
+  padding-left: 20px;
   border: 0px;
   font-size: 15px;
   &:focus {
@@ -47,6 +48,11 @@ const CommentInput = styled.input`
 `;
 
 const Post = (props) => {
+  const [commentText, setCommentText] = useState();
+  const [firstComment, setFirstComment] = useState();
+  const [postingComment, setPostingComment] = useState(false);
+  const history = useHistory();
+
   const convertDate = (dateString) => {
     const monthNames = [
       "January",
@@ -91,6 +97,22 @@ const Post = (props) => {
     }
   };
 
+  const handlePostComment = async (event) => {
+    event.preventDefault();
+    setPostingComment(true);
+    const comment = {
+      commentBy: props.loggedInUser.name,
+      commentText: commentText,
+    };
+    const data = await postComment(props.post._id, comment);
+    setFirstComment({
+      commentBy: props.loggedInUser.name,
+      commentText: commentText,
+    });
+    setCommentText("");
+    setPostingComment(false);
+  };
+
   return (
     <PostCard>
       <PostHeader>
@@ -125,7 +147,11 @@ const Post = (props) => {
             <i className="fa fa-heart-o" onClick={likeUnlikePost}></i>
           )}{" "}
           &nbsp;
-          <i className="fa fa-comment-o"></i> &nbsp;
+          <i
+            className="fa fa-comment-o"
+            onClick={() => history.push("/post/" + props.post._id)}
+          ></i>{" "}
+          &nbsp;
           <i className="fa fa-paper-plane"></i> <br />
         </div>
         <div style={{ paddingTop: "10px", fontSize: "15px" }}>
@@ -133,12 +159,29 @@ const Post = (props) => {
           {props.post.caption} <br />
           {convertDate(props.post.time)}
         </div>
+        {firstComment && (
+          <div>
+            <b>{firstComment.commentBy}</b> &nbsp; {firstComment.commentText}
+          </div>
+        )}
       </PostBottom>
       <CommentBox>
         <div style={{ padding: "20px", fontSize: "17px" }}>😄</div>
-        <CommentInput placeholder="Add a comment..." />
-        <a href="#" style={{ textDecoration: "none", padding: "20px" }}>
-          Post
+        <CommentInput
+          placeholder="Add a comment..."
+          onChange={(event) => setCommentText(event.target.value)}
+          value={commentText}
+        />
+        <a
+          href="#"
+          style={{ textDecoration: "none", padding: "20px", cursor: "pointer" }}
+          onClick={handlePostComment}
+        >
+          {postingComment ? (
+            <i className="fa fa-spinner fa-spin" aria-hidden="true"></i>
+          ) : (
+            <>Post</>
+          )}
         </a>
       </CommentBox>
     </PostCard>

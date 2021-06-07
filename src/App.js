@@ -7,6 +7,7 @@ import Signup from "./instagram/Signup";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { isLoggedIn } from "./services/authService";
 import styled from "styled-components";
+import ViewPost from "./components/ViewPost";
 
 const Container = styled.div`
   background-color: #fafafa;
@@ -42,6 +43,9 @@ function App() {
           </Route>
           <Route exact={true} path="/profile/:username">
             {isLogin ? <ProfilePage /> : <Redirect to="/login" />}
+          </Route>
+          <Route exact={true} path="/post/:postId">
+            {isLogin ? <ViewPost /> : <Redirect to="/login" />}
           </Route>
         </Switch>
       </MyLoginContext.Provider>
