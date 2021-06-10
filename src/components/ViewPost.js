@@ -3,7 +3,12 @@ import styled from "styled-components";
 import Navbar from "./navbar";
 import { useState, useEffect } from "react";
 import Loading from "./Loading";
-import { getPost, likePost, postComment } from "../services/postService";
+import {
+  getPost,
+  likePost,
+  postComment,
+  postCommentReply,
+} from "../services/postService";
 import { useParams } from "react-router-dom";
 import defaultDp from "../assets/images/default.jpg";
 import { useHistory } from "react-router";
@@ -22,12 +27,15 @@ const Container = styled.div`
   width: 70%;
   max-width: 80%;
   margin-top: 100px;
+  margin-bottom: 30px;
   background-color: #fff;
   display: flex;
   border-radius: 3px;
   @media only screen and (max-width: 900px) {
     flex-direction: column;
     width: 100%;
+    max-height: 1000px;
+    height: auto;
   }
   border: 1px solid #d9d9d9;
   max-height: 600px;
@@ -47,8 +55,11 @@ const PostImage = styled.img`
 const CommentsContainer = styled.div`
   position: relative;
   width: 40%;
+  /* background-color: #fff; */
   @media only screen and (max-width: 900px) {
     width: 100%;
+    height: 100%;
+    border: 1px solid #d9d9d9;
   }
   border-left: 1px solid #d9d9d9;
 `;
@@ -76,14 +87,23 @@ const UserDp = styled.img`
 `;
 
 const BottomDiv = styled.div`
-  position: absolute;
-  bottom: 0;
+  /* position: absolute;
+  bottom: 0; */
   z-index: 3;
   border-top: 1px solid #d9d9d9;
   width: 100%;
 `;
 
+const GreySmall = styled.small`
+  font-weight: ${(props) => (props.bold ? "650" : "normal")};
+  cursor: ${(props) => (props.bold ? "pointer" : "default")};
+  color: gray;
+  /* font-size: 13px; */
+`;
+
 const Comment = (props) => {
+  const [viewReplies, setViewReplies] = useState(false);
+
   const convertDate = (dateString) => {
     const monthNames = [
       "January",
@@ -107,6 +127,12 @@ const Comment = (props) => {
     return day + " " + month + " " + hour + ":" + min;
   };
 
+  const replyToComment = () => {
+    props.setCommentText(`@${props.comment.commentBy}`);
+    props.setParentComment(props.comment._id);
+    document.getElementById("commentInput").focus();
+  };
+
   return (
     <CommentContainer>
       <UserDp src={defaultDp} />
@@ -119,9 +145,58 @@ const Comment = (props) => {
         &nbsp;&nbsp;
         {props.comment.commentText}
         <br /> <br />
-        <small style={{ color: "grey" }}>
-          {convertDate(props.comment.time)}
-        </small>
+        <GreySmall>{convertDate(props.comment.time)}</GreySmall>
+        &nbsp;
+        <GreySmall bold onClick={() => replyToComment()}>
+          Reply
+        </GreySmall>
+        {props.comment.replies.length != 0 && !viewReplies ? (
+          <>
+            <br />
+            <br />
+            -----&nbsp;
+            <GreySmall bold onClick={() => setViewReplies(true)}>
+              View Replies
+            </GreySmall>
+          </>
+        ) : (
+          <>
+            {props.comment.replies.length != 0 && (
+              <>
+                <br />
+                <br />
+                -----&nbsp;
+                <GreySmall bold onClick={() => setViewReplies(false)}>
+                  Hide Replies
+                </GreySmall>
+                <br />
+                <br />
+              </>
+            )}
+            {props.comment.replies.map((reply, index) => {
+              return (
+                <CommentContainer style={{ padding: "0px" }}>
+                  <UserDp src={defaultDp} />
+                  <CommentDiv>
+                    <b>
+                      <Link to={`/profile/${reply.replyBy}`}>
+                        {reply.replyBy}
+                      </Link>
+                    </b>
+                    &nbsp;&nbsp;
+                    {reply.replyText}
+                    <br /> <br />
+                    <GreySmall>{convertDate(reply.time)}</GreySmall>
+                    &nbsp;
+                    <GreySmall bold onClick={() => replyToComment()}>
+                      Reply
+                    </GreySmall>
+                  </CommentDiv>
+                </CommentContainer>
+              );
+            })}
+          </>
+        )}
       </CommentDiv>
     </CommentContainer>
   );
@@ -134,11 +209,14 @@ const ViewPost = () => {
   const history = useHistory();
   const [commentText, setCommentText] = useState();
   const [postingComment, setPostingComment] = useState(false);
+  const [parentComment, setParentComment] = useState();
+  const [loadPost, setLoadPost] = useState(true);
 
   useEffect(async () => {
     var fetchedPost = await getPost(postId);
     setPost(fetchedPost);
-  });
+    console.log(fetchedPost);
+  }, [loadPost]);
 
   useEffect(async () => {
     var user = await getLoggedInUser();
@@ -148,11 +226,21 @@ const ViewPost = () => {
   const handlePostComment = async (event) => {
     event.preventDefault();
     setPostingComment(true);
-    const comment = {
-      commentBy: loggedInUser.name,
-      commentText: commentText,
-    };
-    const data = await postComment(post._id, comment);
+    if (parentComment) {
+      const reply = {
+        replyBy: loggedInUser.name,
+        replyText: commentText,
+      };
+      const data = await postCommentReply(post._id, parentComment, reply);
+      if (data.nModified) setLoadPost(!loadPost);
+    } else {
+      const comment = {
+        commentBy: loggedInUser.name,
+        commentText: commentText,
+      };
+      const data = await postComment(post._id, comment);
+      if (data.nModified) setLoadPost(!loadPost);
+    }
     setCommentText("");
     setPostingComment(false);
   };
@@ -172,9 +260,11 @@ const ViewPost = () => {
     if (msg == "Post Unliked") {
       element.classList.add("fa-heart-o");
       element.classList.remove("fa-heart");
+      setLoadPost(!loadPost);
     } else {
       element.classList.add("fa-heart");
       element.classList.remove("fa-heart-o");
+      setLoadPost(!loadPost);
     }
   };
 
@@ -187,7 +277,6 @@ const ViewPost = () => {
             <Container>
               <PostImage src={post.postedImage} />
               <CommentsContainer>
-                {/* Header */}
                 <CommentContainer style={{ borderBottom: "1px solid #d3d3d3" }}>
                   <UserDp
                     src={
@@ -205,14 +294,19 @@ const ViewPost = () => {
                   </CommentDiv>
                 </CommentContainer>
 
-                <div style={{maxHeight:"calc(100% - 220px)",overflowY:"auto"}}>
-                  {/* Comments */}
+                <div className="comment-section">
                   {post.comments.map((comment, index) => (
-                    <Comment comment={comment} key={index} />
+                    <Comment
+                      comment={comment}
+                      key={index}
+                      setCommentText={setCommentText}
+                      setParentComment={setParentComment}
+                      setLoadPost={setLoadPost}
+                      loadPost={loadPost}
+                    />
                   ))}
                 </div>
 
-                {/* Bottom Part */}
                 <BottomDiv>
                   <div
                     style={{
@@ -245,6 +339,7 @@ const ViewPost = () => {
                       placeholder="Add a comment..."
                       onChange={(event) => setCommentText(event.target.value)}
                       value={commentText}
+                      id="commentInput"
                     />
                     <a
                       href="#"
@@ -252,6 +347,7 @@ const ViewPost = () => {
                         textDecoration: "none",
                         paddingTop: "20px",
                         cursor: "pointer",
+                        disabled: { postingComment },
                       }}
                       onClick={handlePostComment}
                     >

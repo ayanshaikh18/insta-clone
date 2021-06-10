@@ -1,3 +1,25 @@
 .fa-heart {
   color: red !important;
 }
+
+.comment-section {
+  height: calc(100% - 220px);
+  overflow-y: auto;
+}
+
+.comment-section::-webkit-scrollbar {
+  width: 5px; /* width of the entire scrollbar */
+}
+
+.comment-section::-webkit-scrollbar-thumb {
+  background-color: grey; /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+  border: 3px solid #d9d9d9; /* creates padding around scroll thumb */
+}
+
+@media only screen and (max-width: 900px) {
+  .comment-section {
+    max-height: 350px;
+    overflow-y: auto;
+  }
+}

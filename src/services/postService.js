@@ -68,3 +68,14 @@ export const getPost = async (postId) => {
   });
   return response.data;
 };
+
+export const postCommentReply = async (postId, commentId,reply) => {
+  let token = localStorage.getItem("token");
+  var response = await axios({
+    method: "POST",
+    url: `/posts/${postId}/comment/${commentId}/reply`,
+    data: reply,
+    headers: { Authorization: `${token}` },
+  });
+  return response.data;
+};

@@ -35,7 +35,10 @@ const PostBottom = styled.div`
 export const CommentBox = styled.div`
   border-top: 1px solid #d9d9d9;
   display: grid;
-  grid-template-columns: 10% 80% 10%;
+  grid-template-columns: 12% 76% 12%;
+  @media only screen and (max-width: 900px) {
+    grid-template-columns: 15% 70% 15%;
+  }
 `;
 
 export const CommentInput = styled.input`
@@ -145,12 +148,12 @@ const Post = (props) => {
             <i className="fa fa-heart" onClick={likeUnlikePost}></i>
           ) : (
             <i className="fa fa-heart-o" onClick={likeUnlikePost}></i>
-          )}{" "}
+          )}
           &nbsp;
           <i
             className="fa fa-comment-o"
             onClick={() => history.push("/post/" + props.post._id)}
-          ></i>{" "}
+          ></i>
           &nbsp;
           <i className="fa fa-paper-plane"></i> <br />
         </div>
@@ -174,7 +177,12 @@ const Post = (props) => {
         />
         <a
           href="#"
-          style={{ textDecoration: "none", padding: "20px", cursor: "pointer" }}
+          style={{
+            textDecoration: "none",
+            padding: "20px",
+            cursor: "pointer",
+            disabled: { postingComment },
+          }}
           onClick={handlePostComment}
         >
           {postingComment ? (
